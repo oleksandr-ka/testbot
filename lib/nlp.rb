@@ -32,7 +32,7 @@ module NLP
           p '--------------response--------------'
           p response
           p '--------------response--------------'
-          session = CACHE.get(response['session_id'])
+          session = CACHE.get(response['session_id']) || {}
           p '!!!!!!!!!!!!!!!SESSION!!!!!!!!!!!!!!!!!!!!!!!!!!!'
           p session
           p '!!!!!!!!!!!!!!!SESSION!!!!!!!!!!!!!!!!!!!!!!!!!!!'
