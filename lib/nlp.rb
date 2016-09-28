@@ -1,6 +1,7 @@
 require "wit"
 
 module NLP
+  @session_context = {}
 
   def client
     @client ||= Wit.new(access_token: 'RYZZVM3TRHSIJW3IVMXXO3RR66QT3CFT', actions: actions)
