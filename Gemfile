@@ -15,7 +15,7 @@ gem 'redis'
 # gem 'redis-store'
 gem 'redis-rails'
 # gem 'redis-rails'
-# gem 'redis-namespace'
+gem 'redis-namespace'
 # gem 'redis-store'
 # gem 'redis-rack-cache'
 # Use ActiveModel has_secure_password
