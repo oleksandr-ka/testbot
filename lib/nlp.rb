@@ -32,7 +32,7 @@ module NLP
           p '--------------response--------------'
           p response
           p '--------------response--------------'
-          session = REDIS.get(response['session_id'])
+          session = CACHE.get(response['session_id'])
           p '!!!!!!!!!!!!!!!SESSION!!!!!!!!!!!!!!!!!!!!!!!!!!!'
           p session
           p '!!!!!!!!!!!!!!!SESSION!!!!!!!!!!!!!!!!!!!!!!!!!!!'
@@ -91,7 +91,7 @@ module NLP
               result['missingDate'] = 'missing'
             end
           end
-          REDIS.set(response['session_id'], session)
+          CACHE.set(response['session_id'], session)
 #        p '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
 #        p result
 #        p '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'

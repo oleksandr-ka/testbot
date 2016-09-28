@@ -8,7 +8,7 @@ class FacebookChat
     def process(fb_params)
       @params = fb_params
       p '=================FB_ECHO============'
-      p @params.first_entry.callback.is_echo
+      p @params.first_entry.callback
       p '=================FB_ECHO============'
       if @params.first_entry.callback.message? && !@params.first_entry.callback.is_echo
         self.run_actions(@params.first_entry.sender_id, @params.first_entry.callback.text)
