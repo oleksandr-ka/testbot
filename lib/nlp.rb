@@ -32,6 +32,10 @@ module NLP
           p '--------------response--------------'
           p response
           p '--------------response--------------'
+          session = REDIS.get(response['session_id'])
+          p '!!!!!!!!!!!!!!!SESSION!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+          p session
+          p '!!!!!!!!!!!!!!!SESSION!!!!!!!!!!!!!!!!!!!!!!!!!!!'
           result = {}
           station_from = nil
           station_to = nil
@@ -52,11 +56,11 @@ module NLP
 #          p '!!!!!!!!!!!!!!!!!!'
             if st.to_a.size > 0
               station_from = st[0]['name']
-              @search_session_data[:from] = station_from
-              @search_session_data[:from_code] = st[0]['code']
+              session[:from] = station_from
+              session[:from_code] = st[0]['code']
             end
-          elsif @search_session_data[:from]
-            station_from = @search_session_data[:from]
+          elsif session[:from]
+            station_from = session[:from]
           end
           if !to_entities.nil?
             st = get_station_name(to_entities[0]['value'])
@@ -65,11 +69,11 @@ module NLP
 #          p '!!!!!!!!!!!!!!!!!!'
             if st.to_a.size > 0
               station_to = st[0]['name']
-              @search_session_data[:to] = station_to
-              @search_session_data[:to_code] = st[0]['code']
+              session[:to] = station_to
+              session[:to_code] = st[0]['code']
             end
-          elsif @search_session_data[:to]
-            station_to = @search_session_data[:to]
+          elsif session[:to]
+            station_to = session[:to]
           end
           if station_from.nil? && station_to.nil?
             result['missingFrom'] = 'missing'
@@ -82,11 +86,12 @@ module NLP
               result['from'] = station_from
               result['to'] = station_to
               result['date'] = parsed_date.strftime('%d-%m-%Y')
-              @search_session_data[:date] = result['date']
+              session[:date] = result['date']
             else
               result['missingDate'] = 'missing'
             end
           end
+          REDIS.set(response['session_id'], session)
 #        p '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
 #        p result
 #        p '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
