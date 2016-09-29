@@ -56,7 +56,7 @@ module NLP
             station_from = session[:from]
           end
           if !to_entities.nil?
-            st = TicketsApi.get('rail/station', {name: from_entities[0]['value']}, true).try(:[], 'stations')
+            st = TicketsApi.get('rail/station', {name: to_entities[0]['value']}, true).try(:[], 'stations')
             if st.to_a.size > 0
               station_to = st[0]['name']
               session[:to] = station_to
