@@ -21,7 +21,7 @@ module NLP
         searchTrain: -> (response) {
           result = {'searchFail' => 'fail'}
           session = Rails.cache.read(response['session_id']) || {}
-          search_result = TicketsApi.get('rail/search', {from: session[:from_code], to: session[:to_code], date: session[:date]}).try(:[], 'result').try(:[], 'code').try(:[], 'code')
+          search_result = TicketsApi.get('rail/search', {from: session[:from_code], to: session[:to_code], date: session[:date]}).try(:[], 'result').try(:[], 'code')
           if !search_result.nil? && search_result.to_i == 0
             result = {
                 'yes_no' => 'yes',
