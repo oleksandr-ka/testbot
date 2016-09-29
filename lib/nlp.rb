@@ -9,11 +9,11 @@ module NLP
   def actions
     {
         send: -> (request, response) {
-          p '--------------response--------------'
+          p '--------------WIT response--------------'
           p response
-          p '--------------request---------------'
+          p '--------------WIT request---------------'
           p request
-          p '------------------------------------'
+          p '-----------------WIT-------------------'
           p "sending... #{response['text']}"
           proccess_text(response['text'])
         },
@@ -50,7 +50,8 @@ module NLP
 #        p date
 #        p '======================'
           if !from_entities.nil?
-            st = get_station_name(from_entities[0]['value'])
+            # st = get_station_name(from_entities[0]['value'])
+            st = TicketsApi.get('rail/station', {name: from_entities[0]['value']}, true).try(:[], 'stations')
 #          p '!!!!!!!!!!!!!!!!!!'
 #          p st
 #          p '!!!!!!!!!!!!!!!!!!'
@@ -63,7 +64,8 @@ module NLP
             station_from = session[:from]
           end
           if !to_entities.nil?
-            st = get_station_name(to_entities[0]['value'])
+            # st = get_station_name(to_entities[0]['value'])
+            st = TicketsApi.get('rail/station', {name: from_entities[0]['value']}, true).try(:[], 'stations')
 #          p '!!!!!!!!!!!!!!!!!!'
 #          p st
 #          p '!!!!!!!!!!!!!!!!!!'
@@ -116,18 +118,18 @@ module NLP
     client.interactive
   end
 
-  def get_station_name(name)
-#    url = URI.parse("http://staging.v2.api.tickets.ua/rail/station.json?key=eeb1cbcd-0b8a-4024-9b65-f4219cc214db")
-#     url = URI.parse("http://127.0.0.1:3001/rail/station.json")
-    url = URI.parse("https://v2.api.tickets.ua/rail/station.json")
-    http = Net::HTTP.new(url.host, url.port)
-    if url.scheme == 'https'
-      http.use_ssl = true
-      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    end
-    response = http.get("#{url.path}?key=eeb1cbcd-0b8a-4024-9b65-f4219cc214db&lang=uk&name=#{CGI.escape(name)}")
-    JSON.parse(response.body).try(:[], 'response').try(:[], 'stations')
-  end
+#   def get_station_name(name)
+# #    url = URI.parse("http://staging.v2.api.tickets.ua/rail/station.json?key=eeb1cbcd-0b8a-4024-9b65-f4219cc214db")
+# #     url = URI.parse("http://127.0.0.1:3001/rail/station.json")
+#     url = URI.parse("https://v2.api.tickets.ua/rail/station.json")
+#     http = Net::HTTP.new(url.host, url.port)
+#     if url.scheme == 'https'
+#       http.use_ssl = true
+#       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+#     end
+#     response = http.get("#{url.path}?key=eeb1cbcd-0b8a-4024-9b65-f4219cc214db&lang=uk&name=#{CGI.escape(name)}")
+#     JSON.parse(response.body).try(:[], 'response').try(:[], 'stations')
+#   end
 
   def search_trains
     url = URI.parse("http://127.0.0.1:3001/rail/search.json")
