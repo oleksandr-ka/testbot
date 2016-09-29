@@ -20,10 +20,12 @@ module NLP
         },
         searchTrain: -> (response) {
           result = {'searchFail' => 'fail'}
-          if search_trains == 0
+          session = Rails.cache.read(response['session_id']) || {}
+          search_result = TicketsApi.get('rail/search', {from: session[:from_code], to: session[:to_code], date: session[:date]}).try(:[], 'result').try(:[], 'code').try(:[], 'code')
+          if !search_result.nil? && search_result.to_i == 0
             result = {
                 'yes_no' => 'yes',
-                'searchSuccess' => "https://gd.tickets.ua.local2/preloader/~#{@search_session_data[:from_code]}~#{@search_session_data[:to_code]}~#{Date.parse(@search_session_data[:date]).strftime('%d.%m.%Y')}~1~ukraine~~~~~/"
+                'searchSuccess' => "https://gd.tickets.ua/preloader/~#{session[:from_code]}~#{session[:to_code]}~#{Date.parse(session[:date]).strftime('%d.%m.%Y')}~1~ukraine~~~~~/"
             }
 
           end
