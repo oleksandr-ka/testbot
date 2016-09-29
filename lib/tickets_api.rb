@@ -25,6 +25,9 @@ class TicketsApi
       p "/#{action}.json?key=eeb1cbcd-0b8a-4024-9b65-f4219cc214db&lang=uk&#{params.to_query}"
       p '=============================='
       response = client.get("/#{action}.json?key=eeb1cbcd-0b8a-4024-9b65-f4219cc214db&lang=uk&#{params.to_query}")
+      p '===========API RESPONSE==============='
+      p response.body
+      p '===========API RESPONSE==============='
       JSON.parse(response.body).try(:[], 'response')
     end
 
