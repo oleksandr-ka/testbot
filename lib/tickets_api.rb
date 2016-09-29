@@ -12,9 +12,9 @@ class TicketsApi
       # Rails.cache.delete(cache_key) unless result
       # return result
       if cache_result
-        self.request_with_cache(action, params)
+        request_with_cache(action, params)
       else
-        self.request_without_cache(action, params)
+        request_without_cache(action, params)
       end
     end
 
