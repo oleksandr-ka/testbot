@@ -1,0 +1,13 @@
+default: &default
+  url: 127.0.0.1:6379
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+production:
+  <<: *default
+  url: h:pajdvkl77bpnjrnq9kvhioi1li@ec2-54-75-250-129.eu-west-1.compute.amazonaws.com:17989
+
