@@ -32,7 +32,7 @@ module NLP
           p '--------------response--------------'
           p response
           p '--------------response--------------'
-          session = CACHE.get(response['session_id']) || {}
+          session = Rails.cache.read(response['session_id']) || {}
           p '!!!!!!!!!!!!!!!SESSION!!!!!!!!!!!!!!!!!!!!!!!!!!!'
           p session
           p '!!!!!!!!!!!!!!!SESSION!!!!!!!!!!!!!!!!!!!!!!!!!!!'
@@ -91,7 +91,7 @@ module NLP
               result['missingDate'] = 'missing'
             end
           end
-          CACHE.set(response['session_id'], session)
+          Rails.cache.write(response['session_id'], session)
 #        p '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
 #        p result
 #        p '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
