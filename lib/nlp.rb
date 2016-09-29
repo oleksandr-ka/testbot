@@ -1,4 +1,5 @@
 require "wit"
+require "tickets_api"
 
 module NLP
 
