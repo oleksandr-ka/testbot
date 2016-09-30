@@ -1,4 +1,5 @@
 require "nlp"
+require "messenger/action"
 
 class FacebookChat
   extend NLP
