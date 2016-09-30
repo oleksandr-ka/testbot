@@ -1,5 +1,6 @@
 require "nlp"
 require "messenger/action"
+require "messenger/components/elements/quick_text"
 
 class FacebookChat
   extend NLP
@@ -9,6 +10,7 @@ class FacebookChat
     def process(fb_params)
       @params = fb_params
       p '=================FB_ECHO============'
+      p @params.first_entry
       p @params.first_entry.callback
       p (!!@params.first_entry.callback.respond_to?(:is_echo) && !!@params.first_entry.callback.is_echo)
       p '=================FB_ECHO============'
@@ -39,7 +41,7 @@ class FacebookChat
 
       Messenger::Client.send(
           Messenger::Request.new(
-              Messenger::Elements::Text.new(text: text),
+              Messenger::Elements::QuickText.new(text: text),
               @params.first_entry.sender_id
           )
       )
