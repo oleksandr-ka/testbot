@@ -2,8 +2,8 @@ module Messenger
   class Action
     def initialize(action, recipient_id)
       @recipient_id = recipient_id
-      @body = body
       @action = action
+      @body = body
     end
 
     def build
