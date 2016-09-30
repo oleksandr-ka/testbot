@@ -5,24 +5,24 @@ end
 
 module Messenger
   module Parameters
-    class Messaging
-      attr_accessor :sender_id, :recipient_id, :callback
+    class Message
+      include Callback
 
-      def initialize(sender:, recipient:, timestamp: nil, message: nil, delivery: nil, postback: nil, optin: nil, read: nil, account_linking: nil, quick_reply: nil)
-        @sender_id    = sender['id']
-        @recipient_id = recipient['id']
-        @callback     = set_callback(message: message, delivery: delivery, postback: postback, optin: optin, read: read, account_linking: account_linking)
+      attr_accessor :mid, :seq, :sticker_id, :text, :attachments, :is_echo, :app_id, :metadata
+
+      def initialize(mid:, seq:, sticker_id: nil, text: nil, attachments: nil, is_echo: nil, app_id: nil, metadata: nil, quick_reply: nil)
+        @mid         = mid
+        @seq         = seq
+        @sticker_id  = sticker_id if sticker_id.present?
+        @text        = text if text.present?
+        @attachments = build_attachments(attachments) if attachments.present?
+        @is_echo     = is_echo
+        @app_id      = app_id
+        @metadata    = metadata
       end
 
-      def set_callback(callbacks)
-        type = callbacks.select { |_, v| v.present? }.keys.first
-        @callback = constant(type).new(callbacks[type].symbolize_keys)
-      end
-
-      private
-
-      def constant(symbol)
-        "Messenger::Parameters::#{symbol.to_s.camelize}".constantize
+      def build_attachments(attachments)
+        attachments.map { |attachment| Attachment.new(attachment.symbolize_keys.slice(:type, :payload)) }
       end
     end
   end
