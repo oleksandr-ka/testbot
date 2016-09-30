@@ -16,7 +16,7 @@ class FacebookChat
         Messenger::Client.send(
             Messenger::Action.new(
                 'typing_on',
-                sender_id
+                @params.first_entry.sender_id
             )
         )
         self.run_actions(@params.first_entry.sender_id, @params.first_entry.callback.text)
@@ -40,7 +40,7 @@ class FacebookChat
       Messenger::Client.send(
           Messenger::Request.new(
               Messenger::Elements::Text.new(text: text),
-              sender_id
+              @params.first_entry.sender_id
           )
       )
     end
