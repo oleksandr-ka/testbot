@@ -10,8 +10,8 @@ class FacebookChat
     def process(params)
       p '============FB PARAMS====================='
       p params
-      @params = MessengerPlatform::Parser.execute(params)
-      p @params
+      @params = MessengerPlatform::Parser.execute(params)[0]
+      p MessengerPlatform::Parser.execute(params)
       p '============FB PARAMS====================='
       # @params = fb_params
       # p '=================FB_ECHO============'
