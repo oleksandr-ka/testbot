@@ -44,7 +44,7 @@ class FacebookChat
       }
       unless quickreplies.blank?
         params[:quick_replies] = []
-        quickreplies.each do reply
+        quickreplies.each do |reply|
           params[:quick_replies] << {
             content_type: 'text',
             title: reply,
