@@ -33,7 +33,7 @@ module Facebook
     end
 
     def verify_token_valid?
-      params["hub.verify_token"] == MessengerPlatform::Config.token
+      params["hub.verify_token"] == 'testbot'
     end
 
   end
