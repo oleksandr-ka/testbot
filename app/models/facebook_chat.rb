@@ -30,7 +30,7 @@ class FacebookChat
       # end
       if @params[:type] == 'message'
         self.run_actions(@params[:from], @params[:text])
-      end
+      end unless @params.empty?
     end
 
     def proccess_text(text)
