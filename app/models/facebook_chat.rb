@@ -1,6 +1,6 @@
-require "nlp"
-# require "messenger/action"
-# require "messenger/components/elements/quick_text"
+require 'nlp'
+require 'messenger_platform/entities/action'
+require 'messenger_platform/entities/text_message'
 
 class FacebookChat
   extend NLP
@@ -29,23 +29,31 @@ class FacebookChat
       #   self.run_actions(@params.first_entry.sender_id, @params.first_entry.callback.text)
       # end
       if @params[:type] == 'message'
+        MessengerPlatform::Api.call(:action, @params[:from], 'typing_on')
         self.run_actions(@params[:from], @params[:text])
       end unless @params.blank?
     end
 
-    def proccess_text(text)
-      self.send_text_message(text)
+    def proccess_text(text, quickreplies)
+      self.send_text_message(text, quickreplies)
     end
 
-    def send_text_message(text)
+    def send_text_message(text, quickreplies = nil)
+      params = {
+          text: text
+      }
+      unless quickreplies.blank?
+        params[:quick_replies] = []
+        quickreplies.each do reply
+          params[:quick_replies] << {
+            content_type: 'text',
+            title: reply,
+            payload: 'SENDTEXT'
+          }
+        end
 
-      MessengerPlatform.text(@params[:from], text)
-      # Messenger::Client.send(
-      #     Messenger::Request.new(
-      #         Messenger::Elements::QuickText.new(text: text),
-      #         @params.first_entry.sender_id
-      #     )
-      # )
+      end
+      MessengerPlatform::Api.call(:text_message, @params[:from], params)
     end
   end
 end

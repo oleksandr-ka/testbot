@@ -16,7 +16,7 @@ module NLP
           p request
           p '-----------------WIT-------------------'
           p "sending... #{response['text']}"
-          proccess_text(response['text'])
+          proccess_text(response['text'], response['quickreplies'])
         },
         searchTrain: -> (response) {
           result = {'searchFail' => 'fail'}
@@ -87,7 +87,7 @@ module NLP
     }
   end
 
-  def proccess_text(text)
+  def proccess_text(text, quickreplies)
     raise Exception 'Not implemented'
   end
 
