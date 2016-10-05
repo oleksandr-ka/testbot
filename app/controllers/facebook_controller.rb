@@ -4,11 +4,7 @@ class FacebookController < ActionController::API
   include Facebook::Base
 
   def index
-    p '===============PARAMS============'
-    p params
-    p MessengerPlatform::Parser.execute(params)
-    p '===============PARAMS============'
-    # FacebookChat.process(fb_params)
+    FacebookChat.process(params)
     head :ok
   end
 

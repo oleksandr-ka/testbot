@@ -7,7 +7,12 @@ class FacebookChat
 
   class << self
 
-    def process(fb_params)
+    def process(params)
+      p '============FB PARAMS====================='
+      p params
+      @params = MessengerPlatform::Parser.execute(params)
+      p @params
+      p '============FB PARAMS====================='
       # @params = fb_params
       # p '=================FB_ECHO============'
       # p @params.first_entry
@@ -23,6 +28,9 @@ class FacebookChat
       #   )
       #   self.run_actions(@params.first_entry.sender_id, @params.first_entry.callback.text)
       # end
+      if @params[:type] == 'message'
+        self.run_actions(@params[:from], @params[:text])
+      end
     end
 
     def proccess_text(text)
@@ -31,14 +39,7 @@ class FacebookChat
 
     def send_text_message(text)
 
-      # p '!!!!!!!!!!!!!!!!!!!!!!!'
-      # p fb_params
-      # p '!!!!!!!!!!!!!!!!!!!!!!!'
-      # p fb_params.first_entry.callback
-      # p '!!!!!!!!!!!!!!!!!!!!!!!'
-      # p fb_params.first_entry
-      # p '!!!!!!!!!!!!!!!!!!!!!!!'
-
+      MessengerPlatform.text(@params[:from], text)
       # Messenger::Client.send(
       #     Messenger::Request.new(
       #         Messenger::Elements::QuickText.new(text: text),
