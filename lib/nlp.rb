@@ -82,7 +82,7 @@ module NLP
               p "#{date[0]['value']}"
               p '===============DATE================'
               if parsed_date
-                session[:date] = result['date']
+                session[:date] = parsed_date
               end
             end
             if session[:date].nil?
