@@ -82,14 +82,15 @@ module NLP
               p "#{date[0]['value']}"
               p '===============DATE================'
               if parsed_date
-                result['from'] = station_from
-                result['to'] = station_to
-                result['date'] = parsed_date.strftime('%d-%m-%Y')
                 session[:date] = result['date']
               end
             end
             if session[:date].nil?
               result['missingDate'] = 'missing'
+            else
+              result['from'] = station_from
+              result['to'] = station_to
+              result['date'] = session[:date].strftime('%d-%m-%Y')
             end
           end
           Rails.cache.write(response['session_id'], session)
