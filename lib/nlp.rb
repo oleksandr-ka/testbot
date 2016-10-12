@@ -1,5 +1,6 @@
 require "wit"
 require "tickets_api"
+require "nlp_date"
 
 module NLP
 
@@ -71,7 +72,7 @@ module NLP
             result['missingTo'] = 'missing' if station_to.nil?
             result['missingFrom'] = 'missing' if station_from.nil?
           else
-            parsed_date = (Date.parse("#{date}") rescue nil)
+            parsed_date = NLPDate.parse("#{date}")
             if parsed_date
               result['from'] = station_from
               result['to'] = station_to

@@ -13,21 +13,7 @@ class FacebookChat
       @params = MessengerPlatform::Parser.execute(params)[0]
       p MessengerPlatform::Parser.execute(params)
       p '============FB PARAMS====================='
-      # @params = fb_params
-      # p '=================FB_ECHO============'
-      # p @params.first_entry
-      # p @params.first_entry.callback
-      # p (!!@params.first_entry.callback.respond_to?(:is_echo) && !!@params.first_entry.callback.is_echo)
-      # p '=================FB_ECHO============'
-      # if @params.first_entry.callback.message? && !(!!@params.first_entry.callback.respond_to?(:is_echo) && !!@params.first_entry.callback.is_echo)
-      #   Messenger::Client.send(
-      #       Messenger::Action.new(
-      #           'typing_on',
-      #           @params.first_entry.sender_id
-      #       )
-      #   )
-      #   self.run_actions(@params.first_entry.sender_id, @params.first_entry.callback.text)
-      # end
+
       if @params[:type] == 'message'
         MessengerPlatform::Api.call(:action, @params[:from], 'typing_on')
         self.run_actions(@params[:from], @params[:text])
