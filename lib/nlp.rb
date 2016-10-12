@@ -73,6 +73,10 @@ module NLP
             result['missingFrom'] = 'missing' if station_from.nil?
           else
             parsed_date = NLPDate.parse("#{date}")
+            p '===============DATE================'
+            p parsed_date
+            p "#{date}"
+            p '===============DATE================'
             if parsed_date
               result['from'] = station_from
               result['to'] = station_to
