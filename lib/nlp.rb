@@ -95,6 +95,11 @@ module NLP
           end
           Rails.cache.write(response['session_id'], session)
           return result
+        },
+        clear_session: -> (response) {
+          session = Rails.cache.read(response['session_id']) || {}
+          Rails.cache.delete(response['session_id']) unless session.blank?
+          return {}
         }
     }
   end
