@@ -58,6 +58,9 @@ module NLP
           end
           if !to_entities.nil?
             st = TicketsApi.get('rail/station', {name: to_entities[0]['value']}, true).try(:[], 'stations')
+            p '========ST TO============='
+            p st
+            p '========ST TO============='
             if st.to_a.size > 0
               station_to = st[0]['name']
               session[:to] = station_to
@@ -75,7 +78,7 @@ module NLP
             parsed_date = NLPDate.parse("#{date[0]['value']}")
             p '===============DATE================'
             p parsed_date
-            p "#{date}"
+            p "#{date[0]['value']}"
             p '===============DATE================'
             if parsed_date
               result['from'] = station_from
