@@ -14,21 +14,13 @@ module NLPDate
     'жов' => 10,
     'лис' => 11,
     'гру' => 12
-  }
-  DAYS = {
-    'понеділок' => 0,
-    'вівторок' => 1,
-    'середа' => 2,
-    'четвер' => 3,
-    'пятниця' => 4,
-    'субота' => 5,
-    'неділя' => 6
-  }
+  }.freeze
+
   DATE = {
     'сьогодні' => Date.today,
     'завтра' => 1.days.from_now,
     'післязавтра' => 2.days.from_now
-  }
+  }.freeze
 
   def parse(string)
     date = (Date.parse(string.to_s.strip) rescue nil)
@@ -39,12 +31,10 @@ module NLPDate
       next unless word.length > 0
       date = parse_full_date(word)
       break unless date.nil?
-      month = parse_month(word)
-      date_hash[:month] = month unless month.nil?
-      year = parse_year(word)
-      date_hash[:year] = year unless year.nil?
-      day = parse_day(word)
-      date_hash[:day] = day unless day.nil?
+      %w(day month year).each do |type|
+        type_data = send("parse_#{type}", word)
+        date_hash[type.to_sym] = type_data unless type_data.nil?
+      end
     end
     unless date_hash[:month].nil? || date_hash[:day].nil?
       date = Date.new(

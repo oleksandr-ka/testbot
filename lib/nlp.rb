@@ -100,6 +100,12 @@ module NLP
           session = Rails.cache.read(response['session_id']) || {}
           Rails.cache.delete(response['session_id']) unless session.blank?
           return {}
+        },
+        get_hello: -> (response) {
+          p '==========HELLO RESPONSE=============='
+          p response
+          p '==========HELLO RESPONSE=============='
+          return {:test => 'test'}
         }
     }
   end
