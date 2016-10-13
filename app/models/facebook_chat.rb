@@ -3,8 +3,8 @@ require 'messenger_platform/entities/action'
 require 'messenger_platform/entities/text_message'
 
 module FacebookChat
-  extend self
   extend NLP
+  extend self
 
   def process(params)
     p '============FB PARAMS====================='
