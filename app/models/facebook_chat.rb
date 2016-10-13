@@ -15,7 +15,7 @@ module FacebookChat
 
     if @params[:type] == 'message'
       MessengerPlatform::Api.call(:action, @params[:from], 'typing_on')
-      self.run_actions(@params[:from], @params[:text])
+      run_actions(@params[:from], @params[:text])
     end unless @params.blank?
   end
 
