@@ -29,24 +29,6 @@ module FacebookChat
   end
 
   def send_text_message(text, quickreplies = nil)
-
-    # MessengerPlatform.payload(:generic, user_id, [
-    #     {
-    #         "title":"Classic White T-Shirt",
-    #         "item_url":"https://petersfancyapparel.com/classic_white_tshirt",
-    #       "image_url":"https://petersfancyapparel.com/classic_white_tshirt.png",
-    #     "subtitle":"Soft white cotton t-shirt is back in style",
-    #     "buttons":[
-    #     {
-    #         "type":"web_url",
-    #         "url":"https://petersfancyapparel.com/classic_white_tshirt",
-    #         "title":"View Item",
-    #         "webview_height_ratio":"tall"
-    #     }
-    # ]+
-    # }
-    # ])
-
     params = {
       text: text
     }
@@ -68,7 +50,33 @@ module FacebookChat
     p '==========send_check_location============='
     p context
     p '==========send_check_location============='
-    send_text_message(text, quickreplies)
+    # send_text_message(text, quickreplies)
+    params = []
+    context[:station_to].each do |station|
+      params << {type: "postback", title: station[:name], payload: "SENDTEXT"}
+    end
+    MessengerPlatform.payload(:generic, @params[:from], [
+      {
+        title: text,
+        buttons: params
+      }
+    ])
+    # MessengerPlatform.payload(:generic, @params[:from], [
+    #   {
+    #         "title": "Classic White T-Shirt",
+          #   "item_url":"https://petersfancyapparel.com/classic_white_tshirt",
+          # "image_url":"https://petersfancyapparel.com/classic_white_tshirt.png",
+        # "subtitle":"Soft white cotton t-shirt is back in style",
+    #     "buttons":[
+    #     {
+    #         "type":"web_url",
+    #         "url":"https://petersfancyapparel.com/classic_white_tshirt",
+    #         "title":"View Item",
+    #         "webview_height_ratio":"tall"
+    #     }
+    # ]
+    #   }
+    # ])
   end
 
 end
