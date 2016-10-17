@@ -20,8 +20,8 @@ module FacebookChat
   end
 
   def proccess_text(text, quickreplies, context)
-    action = context.try(:[], 'action')
-    if action && defined?("send_#{action}")
+    action = context.try(:[], 'process_action')
+    if action && method_defined?("send_#{action}")
       send("send_#{action}", text, quickreplies, context)
     else
       send_text_message(text, quickreplies)
