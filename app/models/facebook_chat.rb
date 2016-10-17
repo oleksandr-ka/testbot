@@ -51,14 +51,19 @@ module FacebookChat
     p context
     p '==========send_check_location============='
     # send_text_message(text, quickreplies)
-    params = []
-    context['stations_to'].each do |station|
-      params << {
-        title: text,
-        buttons: {type: "postback", title: station[:name], payload: "SENDTEXT"}
-      }
+    if context['stations_to']
+      params = []
+      context['stations_to'].each do |station|
+        params << {
+          title: text,
+          buttons: {type: "postback", title: station[:name], payload: "SENDTEXT"}
+        }
+      end
+      MessengerPlatform.payload(:generic, @params[:from], params)
+    else
+      send_text_message(text, quickreplies)
     end
-    MessengerPlatform.payload(:generic, @params[:from], params)
+
     # MessengerPlatform.payload(:generic, @params[:from], [
     #   {
     #         "title": "Classic White T-Shirt",
