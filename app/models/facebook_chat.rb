@@ -55,7 +55,7 @@ module FacebookChat
       context['stations_to'].each do |station|
         data << {
           title: text,
-          buttons: {type: "postback", title: station[:name], payload: "SENDTEXT"}
+          buttons: [{type: "postback", title: station[:name], payload: "SENDTEXT"}]
         }
       end
       p data
