@@ -19,8 +19,12 @@ module FacebookChat
     end unless @params.blank?
   end
 
-  def proccess_text(text, quickreplies)
-    send_text_message(text, quickreplies)
+  def proccess_text(text, quickreplies, action)
+    if action && defined?("send_#{action}")
+      send("send_#{action}", text, quickreplies)
+    else
+      send_text_message(text, quickreplies)
+    end
   end
 
   def send_text_message(text, quickreplies = nil)
@@ -38,7 +42,7 @@ module FacebookChat
     #         "title":"View Item",
     #         "webview_height_ratio":"tall"
     #     }
-    # ]
+    # ]+
     # }
     # ])
 
@@ -57,6 +61,11 @@ module FacebookChat
 
     end
     MessengerPlatform::Api.call(:text_message, @params[:from], params)
+  end
+
+  def send_check_location(text, quickreplies = nil)
+    p '==========send_check_location============='
+    send_text_message(text, quickreplies)
   end
 
 end

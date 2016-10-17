@@ -17,10 +17,13 @@ module NLP
           p request
           p '-----------------WIT-------------------'
           p "sending... #{response['text']}"
-          proccess_text(response['text'], response['quickreplies'])
+          proccess_text(response['text'], response['quickreplies'], response['process_action'])
         },
         searchTrain: -> (response) {
-          result = {'searchFail' => 'fail'}
+          result = {
+            'searchFail' => 'fail',
+            'process_action' => 'search_train'
+          }
           session = Rails.cache.read(response['session_id']) || {}
           search_result = TicketsApi.get('rail/search', {from: session[:from_code], to: session[:to_code], date: session[:date]}).try(:[], 'result').try(:[], 'code')
           if !search_result.nil? && search_result.to_i == 0
@@ -40,7 +43,7 @@ module NLP
           p '!!!!!!!!!!!!!!!SESSION!!!!!!!!!!!!!!!!!!!!!!!!!!!'
           p session
           p '!!!!!!!!!!!!!!!SESSION!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-          result = {}
+          result = {'process_action' => 'check_location'}
           station_from = nil
           station_to = nil
           from_entities = response['entities'].try(:[], 'from')
@@ -57,14 +60,24 @@ module NLP
             station_from = session[:from]
           end
           if !to_entities.nil?
-            st = TicketsApi.get('rail/station', {name: to_entities[0]['value']}, true).try(:[], 'stations')
+            to_entities_value = to_entities[0]['value'].strip.downcase
+            st = TicketsApi.get('rail/station', {name: to_entities_value}, true).try(:[], 'stations')
             p '========ST TO============='
             p st
             p '========ST TO============='
             if st.to_a.size > 0
-              station_to = st[0]['name']
-              session[:to] = station_to
-              session[:to_code] = st[0]['code']
+              stations = []
+              st.to_a.each do |one_st|
+                stations << {name: one_st['name'], code: one_st['code']}
+              end
+              if stations.size > 1
+                result['many_stations'] = 'many'
+                result['stations_to'] = stations
+              else
+                station_to = stations[0]['name']
+                session[:to] = station_to
+                session[:to_code] = stations[0]['code']
+              end
             end
           elsif session[:to]
             station_to = session[:to]
@@ -110,7 +123,7 @@ module NLP
     }
   end
 
-  def proccess_text(text, quickreplies)
+  def proccess_text(text, quickreplies, action)
     raise Exception 'Not implemented'
   end
 
