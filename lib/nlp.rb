@@ -78,9 +78,9 @@ module NLP
                 result['many_stations'] = 'many'
                 result['stations_to'] = stations
               else
-                station_to = stations[0]['name']
+                station_to = stations[0][:name]
                 session[:to] = station_to
-                session[:to_code] = stations[0]['code']
+                session[:to_code] = stations[0][:code]
               end
             end
           elsif session[:to]
