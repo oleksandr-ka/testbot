@@ -69,6 +69,10 @@ module NLP
               stations = []
               st.to_a.each do |one_st|
                 stations << {name: one_st['name'], code: one_st['code']}
+                if one_st['name'].strip.downcase == to_entities_value
+                  stations = [{name: one_st['name'], code: one_st['code']}]
+                  break
+                end
               end
               if stations.size > 1
                 result['many_stations'] = 'many'
@@ -123,15 +127,15 @@ module NLP
     }
   end
 
-  def proccess_text(text, quickreplies, context)
+  def proccess_text(text, quickreplies, context_data)
     raise Exception 'Not implemented'
   end
 
   def run_actions(session_id, text)
-    @session_context ||= {}
-    @session_context = client.run_actions(session_id, text, @session_context)
+    # session_context = {}
+    session_context = client.run_actions(session_id, text)
     p '!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-    p @session_context
+    p session_context
     p '!!!!!!!!!!!!!!!!!!!!!!!!!!!'
   end
 

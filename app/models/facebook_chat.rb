@@ -19,10 +19,10 @@ module FacebookChat
     end unless @params.blank?
   end
 
-  def proccess_text(text, quickreplies, context)
-    action = context.try(:[], 'process_action')
+  def proccess_text(text, quickreplies, context_data)
+    action = context_data.try(:[], 'process_action')
     if action && method_defined?("send_#{action}")
-      send("send_#{action}", text, quickreplies, context)
+      send("send_#{action}", text, quickreplies, context_data)
     else
       send_text_message(text, quickreplies)
     end
@@ -46,13 +46,13 @@ module FacebookChat
     MessengerPlatform::Api.call(:text_message, @params[:from], params)
   end
 
-  def send_check_location(text, quickreplies, context)
+  def send_check_location(text, quickreplies, context_data)
     p '==========send_check_location============='
-    p context
+    p context_data
     # send_text_message(text, quickreplies)
-    if context['stations_to']
+    if context_data['stations_to']
       data = []
-      context['stations_to'].each do |station|
+      context_data['stations_to'].each do |station|
         data << {
           title: text,
           buttons: [{type: "postback", title: station[:name], payload: "SENDTEXT"}]
