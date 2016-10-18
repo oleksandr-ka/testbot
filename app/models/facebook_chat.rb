@@ -16,6 +16,11 @@ module FacebookChat
     if @params[:type] == 'message'
       MessengerPlatform::Api.call(:action, @params[:from], 'typing_on')
       run_actions(@params[:from], @params[:text])
+    elsif @params[:type] == 'payload'
+      payload_action = @params[:text].split('-')[0].downcase
+      if method_defined?(payload_action)
+        send(payload_action, @params[:text].split('-'))
+      end
     end unless @params.blank?
   end
 
@@ -55,7 +60,7 @@ module FacebookChat
       context_data['stations_to'].each do |station|
         data << {
           title: text,
-          buttons: [{type: "postback", title: station[:name], payload: "SENDTEXT"}]
+          buttons: [{type: "postback", title: station[:name], payload: "SET_STATION-TO-#{station[:code]}"}]
         }
       end
       p data
@@ -80,6 +85,13 @@ module FacebookChat
     # ]
     #   }
     # ])
+  end
+
+  def set_station(direction, code)
+    p '==============set_station===================='
+    p direction
+    p code
+    p '==============set_station===================='
   end
 
 end
