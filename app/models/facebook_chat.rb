@@ -18,9 +18,11 @@ module FacebookChat
       run_actions(@params[:from], @params[:text])
     elsif @params[:type] == 'payload'
       payload_params = @params[:text].downcase.split('-')
-      if method_defined?(payload_params[0])
-        payload_params.delete_at(0)
-        send(payload_params[0], @params[:text].split('-')[1])
+      payload_action = payload_params.delete_at(0)
+      if method_defined?(payload_action)
+        p payload_action
+        p payload_params
+        send(payload_action, payload_params)
       end
     end unless @params.blank?
   end
@@ -88,10 +90,9 @@ module FacebookChat
     # ])
   end
 
-  def set_station(direction, code)
+  def set_station(params)
     p '==============set_station===================='
-    p direction
-    p code
+    p params
     p '==============set_station===================='
   end
 
