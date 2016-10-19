@@ -144,9 +144,6 @@ module NLP
       end
       if stations.size == 1
         data = {"#{direction}": stations[0][:name], "#{direction}_code": stations[0][:code]}
-        p '!!!!!!!!!!!!!!!!!!!!!!!'
-        p data
-        p '!!!!!!!!!!!!!!!!!!!!!!!!!!'
         update_session(session_id, {"#{direction}": stations[0][:name], "#{direction}_code": stations[0][:code]})
       end
     end
@@ -158,11 +155,7 @@ module NLP
   end
 
   def update_session(session_id, data)
-    p '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-    p get_session(session_id)
-    p data
-    p '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-    Rails.cache.write(get_session(session_id).merge(data))
+    Rails.cache.write(session_id, get_session(session_id).merge(data))
   end
 
   def clear_session(session_id)
