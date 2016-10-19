@@ -53,12 +53,13 @@ module FacebookChat
     p '==========send_check_location============='
     p context_data
     # send_text_message(text, quickreplies)
-    if context_data['stations_to']
+    if context_data['stations_to'] || context_data['stations_from']
       data = []
-      context_data['stations_to'].each do |station|
+      station_direction = (context_data.keys.include?('stations_to') ? 'to' : 'from')
+      (context_data['stations_to'] || context_data['stations_from']).each do |station|
         data << {
           title: text,
-          buttons: [{type: "postback", title: station[:name], payload: "SET_STATION-TO-#{station[:code]}"}]
+          buttons: [{type: "postback", title: station[:name], payload: "SET_STATION-#{station_direction.upcase}-#{station[:code]}"}]
         }
       end
       p data

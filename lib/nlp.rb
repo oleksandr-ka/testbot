@@ -50,12 +50,22 @@ module NLP
           to_entities = response['entities'].try(:[], 'to')
           date = response['entities'].try(:[], 'date')
           if !from_entities.nil?
-            st = TicketsApi.get('rail/station', {name: from_entities[0]['value']}, true).try(:[], 'stations')
-            if st.to_a.size > 0
-              station_from = st[0]['name']
-              session[:from] = station_from
-              session[:from_code] = st[0]['code']
+            from_entities_value = from_entities[0]['value'].strip.downcase
+            # st = TicketsApi.get('rail/station', {name: from_entities[0]['value']}, true).try(:[], 'stations')
+            stations = get_stations(response['session_id'], 'from', from_entities_value)
+            if stations.size > 1
+              result['many_stations'] = 'many'
+              result['stations_from'] = stations
+            else
+              station_from = stations[0][:name]
+              # session[:to] = station_to
+              # session[:to_code] = stations[0][:code]
             end
+            # if stations.to_a.size > 0
+            #   station_from = st[0]['name']
+            #   session[:from] = station_from
+            #   session[:from_code] = st[0]['code']
+            # end
           elsif session[:from]
             station_from = session[:from]
           end
@@ -100,18 +110,20 @@ module NLP
               p "#{date[0]['value']}"
               p '===============DATE================'
               if parsed_date
-                session[:date] = parsed_date
+                # session[:date] = parsed_date
+                update_session(response['session_id'], {date: parsed_date})
               end
             end
-            if session[:date].nil?
+            date_value = get_session(response['session_id'])[:date]
+            if date_value.nil?
               result['missingDate'] = 'missing'
             else
               result['from'] = station_from
               result['to'] = station_to
-              result['date'] = session[:date].strftime('%d-%m-%Y')
+              result['date'] = date_value.strftime('%d-%m-%Y')
             end
           end
-          update_session(response['session_id'], session)
+          # update_session(response['session_id'], session)
           # Rails.cache.write(response['session_id'], session)
           return result
         },
@@ -168,6 +180,7 @@ module NLP
 
   def run_actions(session_id, text)
     # session_context = {}
+    иупшт
     session_context = client.run_actions(session_id, text)
     p '!!!!!!!!!!!!!!!!!!!!!!!!!!!'
     p session_context
