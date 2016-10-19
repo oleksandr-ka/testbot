@@ -143,7 +143,10 @@ module NLP
         end
       end
       if stations.size == 1
-        update_session(session_id, {"#{direction}": stations[0][:code], "#{direction}_code": stations[0][:code]})
+        p '@@@@@@@@@@@@@@@@@@'
+        p {"#{direction}": stations[0][:name], "#{direction}_code": stations[0][:code]}
+        p '@@@@@@@@@@@@@@@@@@'
+        update_session(session_id, {"#{direction}": stations[0][:name], "#{direction}_code": stations[0][:code]})
       end
     end
     return stations
