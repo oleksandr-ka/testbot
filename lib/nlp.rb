@@ -143,8 +143,9 @@ module NLP
         end
       end
       if stations.size == 1
+        data = {"#{direction}": stations[0][:name], "#{direction}_code": stations[0][:code]}
         p '!!!!!!!!!!!!!!!!!!!!!!!'
-        p {"#{direction}" : stations[0][:name], "#{direction}_code" : stations[0][:code]}
+        p data
         p '!!!!!!!!!!!!!!!!!!!!!!!!!!'
         update_session(session_id, {"#{direction}": stations[0][:name], "#{direction}_code": stations[0][:code]})
       end
