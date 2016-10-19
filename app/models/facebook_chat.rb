@@ -20,8 +20,6 @@ module FacebookChat
       payload_params = @params[:text].downcase.split('-')
       payload_action = payload_params.delete_at(0)
       if method_defined?(payload_action)
-        p payload_action
-        p payload_params
         send(payload_action, payload_params)
       end
     end unless @params.blank?
@@ -37,9 +35,7 @@ module FacebookChat
   end
 
   def send_text_message(text, quickreplies = nil)
-    params = {
-      text: text
-    }
+    params = {text: text}
     unless quickreplies.blank?
       params[:quick_replies] = []
       quickreplies.each do |reply|
@@ -49,7 +45,6 @@ module FacebookChat
           payload: 'SENDTEXT'
         }
       end
-
     end
     MessengerPlatform::Api.call(:text_message, @params[:from], params)
   end

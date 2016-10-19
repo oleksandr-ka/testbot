@@ -24,7 +24,7 @@ module NLP
             'searchFail' => 'fail',
             'process_action' => 'search_train'
           }
-          session = Rails.cache.read(response['session_id']) || {}
+          session = get_session(response['session_id'])
           search_result = TicketsApi.get('rail/search', {from: session[:from_code], to: session[:to_code], date: session[:date]}).try(:[], 'result').try(:[], 'code')
           if !search_result.nil? && search_result.to_i == 0
             result = {
@@ -39,7 +39,7 @@ module NLP
           p '--------------response--------------'
           p response
           p '--------------response--------------'
-          session = Rails.cache.read(response['session_id']) || {}
+          session = get_session(response['session_id'])
           p '!!!!!!!!!!!!!!!SESSION!!!!!!!!!!!!!!!!!!!!!!!!!!!'
           p session
           p '!!!!!!!!!!!!!!!SESSION!!!!!!!!!!!!!!!!!!!!!!!!!!!'
@@ -61,26 +61,27 @@ module NLP
           end
           if !to_entities.nil?
             to_entities_value = to_entities[0]['value'].strip.downcase
-            st = TicketsApi.get('rail/station', {name: to_entities_value}, true).try(:[], 'stations')
-            p '========ST TO============='
-            p st
-            p '========ST TO============='
-            if st.to_a.size > 0
-              stations = []
-              st.to_a.each do |one_st|
-                stations << {name: one_st['name'], code: one_st['code']}
-                if one_st['name'].strip.downcase == to_entities_value
-                  stations = [{name: one_st['name'], code: one_st['code']}]
-                  break
-                end
-              end
+            # st = TicketsApi.get('rail/station', {name: to_entities_value}, true).try(:[], 'stations')
+            # p '========ST TO============='
+            # p st
+            # p '========ST TO============='
+            stations = get_stations(response['session_id'], 'to', to_entities_value)
+            if stations.size > 0
+              # stations = []
+              # st.to_a.each do |one_st|
+              #   stations << {name: one_st['name'], code: one_st['code']}
+              #   if one_st['name'].strip.downcase == to_entities_value
+              #     stations = [{name: one_st['name'], code: one_st['code']}]
+              #     break
+              #   end
+              # end
               if stations.size > 1
                 result['many_stations'] = 'many'
                 result['stations_to'] = stations
               else
                 station_to = stations[0][:name]
-                session[:to] = station_to
-                session[:to_code] = stations[0][:code]
+                # session[:to] = station_to
+                # session[:to_code] = stations[0][:code]
               end
             end
           elsif session[:to]
@@ -110,12 +111,12 @@ module NLP
               result['date'] = session[:date].strftime('%d-%m-%Y')
             end
           end
-          Rails.cache.write(response['session_id'], session)
+          update_session(response['session_id'], session)
+          # Rails.cache.write(response['session_id'], session)
           return result
         },
         clear_session: -> (response) {
-          session = Rails.cache.read(response['session_id']) || {}
-          Rails.cache.delete(response['session_id']) unless session.blank?
+          clear_session(response['session_id'])
           return {}
         },
         get_hello: -> (response) {
@@ -125,6 +126,39 @@ module NLP
           return {:test => 'test'}
         }
     }
+  end
+
+  def get_stations(session_id, direction, text)
+    station_response = TicketsApi.get('rail/station', {name: text}, true).try(:[], 'stations')
+    p '========ST TO============='
+    p station_response
+    p '========ST TO============='
+    stations = []
+    if station_response.to_a.size > 0
+      station_response.to_a.each do |one_st|
+        stations << {name: one_st['name'], code: one_st['code']}
+        if one_st['name'].strip.downcase == text
+          stations = [{name: one_st['name'], code: one_st['code']}]
+          break
+        end
+      end
+      if stations.size == 1
+        update_session(session_id, {"#{direction}": stations[0][:code], "#{direction}_code": stations[0][:code]})
+      end
+    end
+    return stations
+  end
+
+  def get_session(session_id)
+    return Rails.cache.read(session_id) || {}
+  end
+
+  def update_session(session_id, data)
+    Rails.cache.write(get_session(session_id).merge(data))
+  end
+
+  def clear_session(session_id)
+    Rails.cache.delete(session_id)
   end
 
   def proccess_text(text, quickreplies, context_data)
