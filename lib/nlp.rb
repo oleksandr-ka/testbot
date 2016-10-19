@@ -158,6 +158,10 @@ module NLP
   end
 
   def update_session(session_id, data)
+    p '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+    p get_session(session_id)
+    p data
+    p '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
     Rails.cache.write(get_session(session_id).merge(data))
   end
 
