@@ -180,7 +180,6 @@ module NLP
 
   def run_actions(session_id, text)
     # session_context = {}
-    иупшт
     session_context = client.run_actions(session_id, text)
     p '!!!!!!!!!!!!!!!!!!!!!!!!!!!'
     p session_context
