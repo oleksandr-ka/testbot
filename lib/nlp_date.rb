@@ -27,7 +27,7 @@ module NLPDate
     return date unless date.nil?
     date_hash = {}
     string.to_s.strip.split(' ').each do |word|
-      word = word.to_s.strip
+      word = word.to_s.strip.mb_chars.downcase.to_s
       next unless word.length > 0
       date = parse_full_date(word)
       break unless date.nil?

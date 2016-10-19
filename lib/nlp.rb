@@ -50,7 +50,7 @@ module NLP
           to_entities = response['entities'].try(:[], 'to')
           date = response['entities'].try(:[], 'date')
           if !from_entities.nil?
-            from_entities_value = from_entities[0]['value'].strip.downcase
+            from_entities_value = from_entities[0]['value'].strip.mb_chars.downcase.to_s
             # st = TicketsApi.get('rail/station', {name: from_entities[0]['value']}, true).try(:[], 'stations')
             stations = get_stations(response['session_id'], 'from', from_entities_value)
             if stations.size > 1
@@ -70,7 +70,7 @@ module NLP
             station_from = session[:from]
           end
           if !to_entities.nil?
-            to_entities_value = to_entities[0]['value'].strip.downcase
+            to_entities_value = to_entities[0]['value'].strip.mb_chars.downcase.to_s
             # st = TicketsApi.get('rail/station', {name: to_entities_value}, true).try(:[], 'stations')
             # p '========ST TO============='
             # p st
@@ -149,13 +149,12 @@ module NLP
     if station_response.to_a.size > 0
       station_response.to_a.each do |one_st|
         stations << {name: one_st['name'], code: one_st['code']}
-        if one_st['name'].strip.downcase == text
+        if one_st['name'].strip.mb_chars.downcase.to_s == text
           stations = [{name: one_st['name'], code: one_st['code']}]
           break
         end
       end
       if stations.size == 1
-        data = {"#{direction}": stations[0][:name], "#{direction}_code": stations[0][:code]}
         update_session(session_id, {"#{direction}": stations[0][:name], "#{direction}_code": stations[0][:code]})
       end
     end
