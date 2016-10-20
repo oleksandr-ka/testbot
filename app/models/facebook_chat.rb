@@ -20,6 +20,7 @@ module FacebookChat
       payload_params = @params[:text].downcase.split('-')
       payload_action = payload_params.delete_at(0)
       if method_defined?(payload_action)
+        MessengerPlatform::Api.call(:action, @params[:from], 'typing_on')
         send(payload_action, payload_params)
       end
     end unless @params.blank?

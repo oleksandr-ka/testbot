@@ -179,10 +179,12 @@ module NLP
 
   def run_actions(session_id, text)
     # session_context = {}
-    session_context = client.run_actions(session_id, text)
-    p '!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+    p '===============CONTEXT======================='
+    p (get_session(session_id)[:context] || {})
+    session_context = client.run_actions(session_id, text, (get_session(session_id)[:context] || {}))
+    update_session(session_id, {content: session_context})
     p session_context
-    p '!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+    p '===============CONTEXT======================='
   end
 
   def interactive
