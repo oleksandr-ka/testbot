@@ -31,7 +31,7 @@ module NLP
                 'yes_no' => 'yes',
                 'searchSuccess' => "https://gd.tickets.ua/preloader/~#{session[:from_code]}~#{session[:to_code]}~#{session[:date].to_date.strftime('%d.%m.%Y')}~1~ukraine~~~~~/"
             }
-
+            clear_session(response['session_id'])
           end
           return result
         },
