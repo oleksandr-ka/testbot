@@ -29,7 +29,7 @@ module NLP
           if !search_result.nil? && search_result.to_i == 0
             result = {
                 'yes_no' => 'yes',
-                'searchSuccess' => "https://gd.tickets.ua/preloader/~#{session[:from_code]}~#{session[:to_code]}~#{Date.parse(session[:date]).strftime('%d.%m.%Y')}~1~ukraine~~~~~/"
+                'searchSuccess' => "https://gd.tickets.ua/preloader/~#{session[:from_code]}~#{session[:to_code]}~#{session[:date].to_date.strftime('%d.%m.%Y')}~1~ukraine~~~~~/"
             }
 
           end
