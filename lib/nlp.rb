@@ -25,7 +25,7 @@ module NLP
             'process_action' => 'search_train'
           }
           session = get_session(response['session_id'])
-          search_result = TicketsApi.get('rail/search', {from: session[:from_code], to: session[:to_code], date: session[:date]}).try(:[], 'result').try(:[], 'code')
+          search_result = TicketsApi.get('rail/search', {from: session[:from_code], to: session[:to_code], date: session[:date].to_date.strftime('%d-%m-%Y')}).try(:[], 'result').try(:[], 'code')
           if !search_result.nil? && search_result.to_i == 0
             result = {
                 'yes_no' => 'yes',
@@ -170,12 +170,12 @@ module NLP
     client.interactive
   end
 
-  def search_trains
-    url = URI.parse("http://127.0.0.1:3001/rail/search.json")
-    http = Net::HTTP.new(url.host, url.port)
-    response = http.get("#{url.path}?key=eeb1cbcd-0b8a-4024-9b65-f4219cc214db&lang=uk&from=#{@search_session_data[:from_code]}&to=#{@search_session_data[:to_code]}&date=#{@search_session_data[:date].to_date.strftime('%d-%m-%Y')}")
-    result_code = JSON.parse(response.body).try(:[], 'response').try(:[], 'result').try(:[], 'code')
-    result_code.to_i unless result_code.nil?
-  end
+  # def search_trains
+  #   url = URI.parse("http://127.0.0.1:3001/rail/search.json")
+  #   http = Net::HTTP.new(url.host, url.port)
+  #   response = http.get("#{url.path}?key=eeb1cbcd-0b8a-4024-9b65-f4219cc214db&lang=uk&from=#{@search_session_data[:from_code]}&to=#{@search_session_data[:to_code]}&date=#{@search_session_data[:date].to_date.strftime('%d-%m-%Y')}")
+  #   result_code = JSON.parse(response.body).try(:[], 'response').try(:[], 'result').try(:[], 'code')
+  #   result_code.to_i unless result_code.nil?
+  # end
 
 end
