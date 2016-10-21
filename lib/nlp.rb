@@ -28,8 +28,10 @@ module NLP
           search_result = TicketsApi.get('rail/search', {from: session[:from_code], to: session[:to_code], date: session[:date].to_date.strftime('%d-%m-%Y')}).try(:[], 'result').try(:[], 'code')
           if !search_result.nil? && search_result.to_i == 0
             result = {
-                'yes_no' => 'yes',
-                'searchSuccess' => "https://gd.tickets.ua/preloader/~#{session[:from_code]}~#{session[:to_code]}~#{session[:date].to_date.strftime('%d.%m.%Y')}~1~ukraine~~~~~/"
+              'yes_no' => 'yes',
+              'searchSuccess' => "https://gd.tickets.ua/preloader/~#{session[:from_code]}~#{session[:to_code]}~#{session[:date].to_date.strftime('%d.%m.%Y')}~1~ukraine~~~~~/",
+              'trains_count' => search_result['trains'].size,
+              'trains_descriptions' => search_result['trains'].map{ |train| "#{train['number']} #{train['train_departure_name']}-#{train['train_arrival_name']}" }.join("\n")
             }
             clear_session(response['session_id'])
           end
