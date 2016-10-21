@@ -32,7 +32,7 @@ module NLP
               'yes_no' => 'yes',
               'searchSuccess' => "https://gd.tickets.ua/preloader/~#{session[:from_code]}~#{session[:to_code]}~#{session[:date].to_date.strftime('%d.%m.%Y')}~1~ukraine~~~~~/",
               'trains_count' => search_result['trains'].size,
-              'trains_descriptions' => search_result['trains'].map{ |train| "#{train['number']}" }.join("\n")
+              'trains_descriptions' => search_result['trains'].map{ |train| "#{train['number']}" }.join(", ")
             }
             clear_session(response['session_id'])
           end
