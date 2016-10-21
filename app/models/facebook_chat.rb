@@ -88,7 +88,7 @@ module FacebookChat
   end
 
   def set_station(params)
-    station = get_stations(@params[:from], params[0], params[1])
+    get_stations(@params[:from], params[0], params[1])
     run_actions(@params[:from], "", true)
   end
 

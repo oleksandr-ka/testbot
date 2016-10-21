@@ -75,23 +75,18 @@ module NLP
           elsif session[:to]
             station_to = session[:to]
           end
+          if !date.nil?
+            parsed_date = NLPDate.parse("#{date[0]['value']}")
+            if parsed_date
+              update_session(response['session_id'], {date: parsed_date})
+            end
+          end
           if station_from.nil? && station_to.nil?
             result['missingFrom'] = 'missing'
           elsif station_from.nil? || station_to.nil?
             result['missingTo'] = 'missing' if station_to.nil?
             result['missingFrom'] = 'missing' if station_from.nil?
           else
-            if !date.nil?
-              parsed_date = NLPDate.parse("#{date[0]['value']}")
-              p '===============DATE================'
-              p parsed_date
-              p "#{date[0]['value']}"
-              p '===============DATE================'
-              if parsed_date
-                # session[:date] = parsed_date
-                update_session(response['session_id'], {date: parsed_date})
-              end
-            end
             date_value = get_session(response['session_id'])[:date]
             if date_value.nil?
               result['missingDate'] = 'missing'
@@ -124,9 +119,9 @@ module NLP
     stations = []
     if station_response.to_a.size > 0
       station_response.to_a.each do |one_st|
-        stations << {name: one_st['name'], code: one_st['code']}
+        stations << {name: one_st['name'], code: one_st['code'], railroad: one_st['railroad']}
         if one_st['name'].strip.mb_chars.downcase.to_s == text
-          stations = [{name: one_st['name'], code: one_st['code']}]
+          stations = [{name: one_st['name'], code: one_st['code'], railroad: one_st['railroad']}]
           break
         end
       end
@@ -169,13 +164,5 @@ module NLP
   def interactive
     client.interactive
   end
-
-  # def search_trains
-  #   url = URI.parse("http://127.0.0.1:3001/rail/search.json")
-  #   http = Net::HTTP.new(url.host, url.port)
-  #   response = http.get("#{url.path}?key=eeb1cbcd-0b8a-4024-9b65-f4219cc214db&lang=uk&from=#{@search_session_data[:from_code]}&to=#{@search_session_data[:to_code]}&date=#{@search_session_data[:date].to_date.strftime('%d-%m-%Y')}")
-  #   result_code = JSON.parse(response.body).try(:[], 'response').try(:[], 'result').try(:[], 'code')
-  #   result_code.to_i unless result_code.nil?
-  # end
 
 end
