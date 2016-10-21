@@ -25,8 +25,9 @@ module NLP
             'process_action' => 'search_train'
           }
           session = get_session(response['session_id'])
-          search_result = TicketsApi.get('rail/search', {from: session[:from_code], to: session[:to_code], date: session[:date].to_date.strftime('%d-%m-%Y')}).try(:[], 'result').try(:[], 'code')
-          if !search_result.nil? && search_result.to_i == 0
+          search_result = TicketsApi.get('rail/search', {from: session[:from_code], to: session[:to_code], date: session[:date].to_date.strftime('%d-%m-%Y')})
+          search_result_status_code = search_result.try(:[], 'result').try(:[], 'code')
+          if !search_result_status_code.nil? && search_result_status_code.to_i == 0
             result = {
               'yes_no' => 'yes',
               'searchSuccess' => "https://gd.tickets.ua/preloader/~#{session[:from_code]}~#{session[:to_code]}~#{session[:date].to_date.strftime('%d.%m.%Y')}~1~ukraine~~~~~/",
