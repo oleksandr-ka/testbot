@@ -51,6 +51,7 @@ module NLP
           station_to = nil
           from_entities = response['entities'].try(:[], 'from')
           to_entities = response['entities'].try(:[], 'to')
+          location_entities = response['entities'].try(:[], 'location')
           date = response['entities'].try(:[], 'date')
           if !from_entities.nil?
             from_entities_value = from_entities[0]['value'].strip.mb_chars.downcase.to_s
@@ -77,6 +78,19 @@ module NLP
             end
           elsif session[:to]
             station_to = session[:to]
+          end
+          if !location_entities.nil?
+            location_entities_value = location_entities[0]['value'].strip.mb_chars.downcase.to_s
+            location_direction = station_to.nil? ? 'to' : 'from'
+            stations = get_stations(response['session_id'], location_direction, location_entities_value)
+            if stations.size > 0
+              if stations.size > 1
+                result["many_stations"] = "many"
+                result["stations_#{location_direction}"] = stations
+              else
+                eval("stations_#{location_direction} = \"#{stations[0][:name]}\"")
+              end
+            end
           end
           if !date.nil?
             parsed_date = NLPDate.parse("#{date[0]['value']}")
