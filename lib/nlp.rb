@@ -16,12 +16,11 @@ module NLP
           p '--------------WIT request---------------'
           p request
           p '-----------------WIT-------------------'
-          p "sending... #{response['text']}"
           proccess_text(response['text'], response['quickreplies'], request['context'])
         },
         searchTrain: -> (response) {
           result = {
-            'searchFail' => 'fail',
+            'search_fail' => true,
             'process_action' => 'search_train'
           }
           session = get_session(response['session_id'])
@@ -29,8 +28,8 @@ module NLP
           search_result_status_code = search_result.try(:[], 'result').try(:[], 'code')
           if !search_result_status_code.nil? && search_result_status_code.to_i == 0
             result = {
-              'yes_no' => 'yes',
-              'searchSuccess' => "https://gd.tickets.ua/preloader/~#{session[:from_code]}~#{session[:to_code]}~#{session[:date].to_date.strftime('%d.%m.%Y')}~1~ukraine~~~~~/",
+              'search_success' => true,
+              'search_url' => "https://gd.tickets.ua/preloader/~#{session[:from_code]}~#{session[:to_code]}~#{session[:date].to_date.strftime('%d.%m.%Y')}~1~ukraine~~~~~/",
               'trains_count' => search_result['trains'].size,
               'trains_descriptions' => search_result['trains'].map{ |train| "#{train['number']}" }.join(", ")
             }
@@ -99,14 +98,14 @@ module NLP
             end
           end
           if station_from.nil? && station_to.nil?
-            result['missingFrom'] = 'missing'
+            result['missing_from'] = true
           elsif station_from.nil? || station_to.nil?
-            result['missingTo'] = 'missing' if station_to.nil?
-            result['missingFrom'] = 'missing' if station_from.nil?
+            result['missing_to'] = true if station_to.nil?
+            result['missing_from'] = true if station_from.nil?
           else
             date_value = get_session(response['session_id'])[:date]
             if date_value.nil?
-              result['missingDate'] = 'missing'
+              result['missing_date'] = true
             else
               result['from'] = station_from
               result['to'] = station_to
@@ -130,9 +129,6 @@ module NLP
 
   def get_stations(session_id, direction, text)
     station_response = TicketsApi.get('rail/station', {name: text}, true).try(:[], 'stations')
-    p '========ST TO============='
-    p station_response
-    p '========ST TO============='
     stations = []
     if station_response.to_a.size > 0
       station_response.to_a.each do |one_st|
