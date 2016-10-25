@@ -35,7 +35,7 @@ module NLP
             }
             clear_session(response['session_id'])
           elsif !search_result_status_code.nil?
-            result["error_#{search_result_status_code.to_i}"] = true
+            result["error_#{search_result_status_code}"] = true
           end
           return result
         },
