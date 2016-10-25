@@ -88,7 +88,7 @@ module NLP
                 result["many_stations"] = "many"
                 result["stations_#{location_direction}"] = stations
               else
-                eval("stations_#{location_direction} = \"#{stations[0][:name]}\"")
+                eval("station_#{location_direction} = \"#{stations[0][:name]}\"")
               end
             end
           end
