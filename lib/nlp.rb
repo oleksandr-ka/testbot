@@ -34,6 +34,8 @@ module NLP
               'trains_descriptions' => search_result['trains'].map{ |train| "#{train['number']}" }.join(", ")
             }
             clear_session(response['session_id'])
+          elsif !search_result_status_code.nil?
+            result["error_#{search_result_status_code.to_i}"] = true
           end
           return result
         },
