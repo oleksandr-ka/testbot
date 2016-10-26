@@ -100,7 +100,7 @@ module NLP
               update_session(response['session_id'], {date: parsed_date})
             end
           end
-          if station_from.nil? && station_to.nil?
+          if (station_from.nil? && station_to.nil?) && !location_direction
             result['missing_from'] = true
             result['checked_location'] = (location_entities || from_entities)[0]['value'] if !from_entities.nil? || !location_entities.nil?
           elsif station_from.nil? || station_to.nil?
