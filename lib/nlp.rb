@@ -21,7 +21,6 @@ module NLP
         searchTrain: -> (response) {
           result = {
             'search_fail' => true,
-            'process_action' => 'search_train',
             'search_url' => "https://gd.tickets.ua"
           }
           session = get_session(response['session_id'])
@@ -38,6 +37,7 @@ module NLP
           elsif !search_result_status_code.nil?
             result["error_#{search_result_status_code}"] = true
           end
+          result['process_action'] = 'search_train'
           return result
         },
         checkLocations: -> (response) {
