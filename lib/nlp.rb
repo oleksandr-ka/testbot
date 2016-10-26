@@ -101,9 +101,16 @@ module NLP
           end
           if station_from.nil? && station_to.nil?
             result['missing_from'] = true
+            result['checked_location'] = location_entities || from_entities unless from_entities.nil? || location_entities.nil?
           elsif station_from.nil? || station_to.nil?
-            result['missing_to'] = true if station_to.nil?
-            result['missing_from'] = true if station_from.nil?
+            if station_to.nil?
+              result['missing_to'] = true
+              result['checked_location'] = location_entities || to_entities unless to_entities.nil? || location_entities.nil?
+            end
+            if station_from.nil?
+              result['missing_from'] = true
+              result['checked_location'] = location_entities || from_entities unless from_entities.nil? || location_entities.nil?
+            end
           else
             date_value = get_session(response['session_id'])[:date]
             if date_value.nil?
