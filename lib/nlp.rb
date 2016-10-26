@@ -82,7 +82,7 @@ module NLP
           end
           if !location_entities.nil?
             location_entities_value = location_entities[0]['value'].strip.mb_chars.downcase.to_s
-            location_direction = station_to.nil? ? 'to' : 'from'
+            location_direction = station_from.nil? ? 'from' : 'to'
             stations = get_stations(response['session_id'], location_direction, location_entities_value)
             if stations.size > 0
               if stations.size > 1
