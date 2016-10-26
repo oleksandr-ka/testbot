@@ -71,9 +71,9 @@ module FacebookChat
   end
 
   def send_search_train(text, quickreplies, context_data)
-    data = {
+    data = [{
       title: text,
-      image_url: "https://static.tickets.ua/img/gd_preloader.png",
+      image_url: context_data["search_fail"] ? "http://99px.ru/sstorage/53/2015/12/mid_152713_2287.jpg" : "http://malteze.net/images/sampledata/poroda/1v_6453738376545473.jpg",
       buttons: [
         {
           type: "web_url",
@@ -81,11 +81,7 @@ module FacebookChat
           url: context_data['search_url']
         }
       ]
-    }
-    p "======================send_search_train===================="
-    p @params[:from]
-    p data
-    p "======================send_search_train===================="
+    }]
     MessengerPlatform.payload(:generic, @params[:from], data)
   end
 
