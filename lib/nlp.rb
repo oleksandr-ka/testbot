@@ -21,7 +21,8 @@ module NLP
         searchTrain: -> (response) {
           result = {
             'search_fail' => true,
-            'process_action' => 'search_train'
+            'process_action' => 'search_train',
+            'search_url' => "https://gd.tickets.ua"
           }
           session = get_session(response['session_id'])
           search_result = TicketsApi.get('rail/search', {from: session[:from_code], to: session[:to_code], date: session[:date].to_date.strftime('%d-%m-%Y')})

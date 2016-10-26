@@ -53,7 +53,6 @@ module FacebookChat
   def send_check_location(text, quickreplies, context_data)
     p '==========send_check_location============='
     p context_data
-    # send_text_message(text, quickreplies)
     if context_data['stations_to'] || context_data['stations_from']
       data = []
       station_direction = (context_data.keys.include?('stations_to') ? 'to' : 'from')
@@ -69,22 +68,21 @@ module FacebookChat
       send_text_message(text, quickreplies)
     end
     p '==========send_check_location============='
-    # MessengerPlatform.payload(:generic, @params[:from], [
-    #   {
-    #         "title": "Classic White T-Shirt",
-          #   "item_url":"https://petersfancyapparel.com/classic_white_tshirt",
-          # "image_url":"https://petersfancyapparel.com/classic_white_tshirt.png",
-        # "subtitle":"Soft white cotton t-shirt is back in style",
-    #     "buttons":[
-    #     {
-    #         "type":"web_url",
-    #         "url":"https://petersfancyapparel.com/classic_white_tshirt",
-    #         "title":"View Item",
-    #         "webview_height_ratio":"tall"
-    #     }
-    # ]
-    #   }
-    # ])
+  end
+
+  def send_search_train(text, quickreplies, context_data)
+    data = {
+      title: text,
+      image_url: "https://static.tickets.ua/img/gd_preloader.png",
+      buttons: [
+        {
+          type: "web_url",
+          title: "Go",
+          url: context_data['search_url']
+        }
+      ]
+    }
+    MessengerPlatform.payload(:generic, @params[:from], data)
   end
 
   def set_station(params)
