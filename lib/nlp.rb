@@ -100,17 +100,14 @@ module NLP
               update_session(response['session_id'], {date: parsed_date})
             end
           end
-          if (station_from.nil? && station_to.nil?) && !location_direction
-            result['missing_from'] = true
-            result['checked_location'] = (location_entities || from_entities)[0]['value'] if !from_entities.nil? || !location_entities.nil?
-          elsif station_from.nil? || station_to.nil?
-            if (location_direction == 'from' && station_from.nil?) || (location_direction == 'to' && station_to.nil?)
-              if location_direction == 'from'
-                result['missing_from'] = true
-              else
-                result['missing_to'] = true
-              end
-              result['checked_location'] = location_entities[0]['value']
+
+          if station_from.nil? || station_to.nil?
+            if station_from.nil? && (!from_entities.nil? || location_direction == 'from')
+              result['missing_from'] = true
+              result['checked_location'] = (location_entities_value || from_entities)[0]['value']
+            elsif station_to.nil? && (!to_entities.nil? || location_direction == 'to')
+              result['missing_to'] = true
+              result['checked_location'] = (location_entities_value || to_entities)[0]['value']
             else
               result['missing_to'] = true if station_to.nil?
               result['missing_from'] = true if station_from.nil?
@@ -125,6 +122,33 @@ module NLP
               result['date'] = date_value.strftime('%d-%m-%Y')
             end
           end
+
+
+
+          # if (station_from.nil? && station_to.nil?) && !location_direction
+          #   result['missing_from'] = true
+          # elsif station_from.nil? || station_to.nil?
+          #   if (location_direction == 'from' && station_from.nil?) || (location_direction == 'to' && station_to.nil?)
+          #     if location_direction == 'from'
+          #       result['missing_from'] = true
+          #     else
+          #       result['missing_to'] = true
+          #     end
+          #     result['checked_location'] = location_entities[0]['value']
+          #   else
+          #     result['missing_to'] = true if station_to.nil?
+          #     result['missing_from'] = true if station_from.nil?
+          #   end
+          # else
+          #   date_value = get_session(response['session_id'])[:date]
+          #   if date_value.nil?
+          #     result['missing_date'] = true
+          #   else
+          #     result['from'] = station_from
+          #     result['to'] = station_to
+          #     result['date'] = date_value.strftime('%d-%m-%Y')
+          #   end
+          # end
           return result
         },
         clear_session: -> (response) {
