@@ -77,11 +77,15 @@ module FacebookChat
       buttons: [
         {
           type: "web_url",
-          title: "Go",
+          title: "Продовжити",
           url: context_data['search_url']
         }
       ]
     }
+    p "======================send_search_train===================="
+    p @params[:from]
+    p data
+    p "======================send_search_train===================="
     MessengerPlatform.payload(:generic, @params[:from], data)
   end
 
