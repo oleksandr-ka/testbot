@@ -80,6 +80,7 @@ module NLP
           elsif session[:to]
             station_to = session[:to]
           end
+          location_direction = false
           if !location_entities.nil?
             location_entities_value = location_entities[0]['value'].strip.mb_chars.downcase.to_s
             location_direction = station_from.nil? ? 'from' : 'to'
@@ -103,13 +104,16 @@ module NLP
             result['missing_from'] = true
             result['checked_location'] = (location_entities || from_entities)[0]['value'] if !from_entities.nil? || !location_entities.nil?
           elsif station_from.nil? || station_to.nil?
-            if station_to.nil?
-              result['missing_to'] = true
-              result['checked_location'] = (location_entities || to_entities)[0]['value'] if !to_entities.nil? || !location_entities.nil?
-            end
-            if station_from.nil?
-              result['missing_from'] = true
-              result['checked_location'] = (location_entities || from_entities)[0]['value'] if !from_entities.nil? || !location_entities.nil?
+            if (location_direction == 'from' && station_from.nil?) || (location_direction == 'to' && station_to.nil?)
+              if location_direction == 'from'
+                result['missing_from'] = true
+              else
+                result['missing_to'] = true
+              end
+              result['checked_location'] = location_entities[0]['value']
+            else
+              result['missing_to'] = true if station_to.nil?
+              result['missing_from'] = true if station_from.nil?
             end
           else
             date_value = get_session(response['session_id'])[:date]
