@@ -35,7 +35,7 @@ module NLP
             }
             clear_session(response['session_id'])
           elsif !search_result_status_code.nil?
-            result["error_#{search_result_status_code}"] = 'error'
+            result["error#{search_result_status_code}"] = 'error'
           end
           result['process_action'] = 'search_train'
           return result
