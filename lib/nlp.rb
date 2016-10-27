@@ -5,7 +5,7 @@ require "nlp_date"
 module NLP
 
   def client
-    @client ||= Wit.new(access_token: 'RYZZVM3TRHSIJW3IVMXXO3RR66QT3CFT', actions: actions)
+    @client ||= Wit.new(access_token: "RYZZVM3TRHSIJW3IVMXXO3RR66QT3CFT", actions: actions)
   end
 
   def actions
@@ -16,7 +16,7 @@ module NLP
           p '--------------WIT request---------------'
           p request
           p '-----------------WIT-------------------'
-          proccess_text(response['text'], response['quickreplies'], request['context'])
+          proccess_text(response.fetch['text'], response['quickreplies'], request['context'])
         },
         searchTrain: -> (response) {
           result = {
@@ -29,7 +29,7 @@ module NLP
           if !search_result_status_code.nil? && search_result_status_code.to_i == 0
             result = {
               'search_success' => true,
-              'search_url' => "https://gd.tickets.ua/preloader/~#{session[:from_code]}~#{session[:to_code]}~#{session[:date].to_date.strftime('%d.%m.%Y')}~1~ukraine~~~~~/",
+              'search_url' => "https://gd.tickets.ua/preloader/~#{session[:from_code]}~#{session[:to_code]}~#{session[:date].to_date.strftime("%d.%m.%Y")}~1~ukraine~~~~~/",
               'trains_count' => search_result['trains'].size,
               'trains_descriptions' => search_result['trains'].map{ |train| "#{train['number']}" }.join(", ")
             }
@@ -63,7 +63,7 @@ module NLP
               result['stations_from'] = stations
             else
               station_from = stations[0][:name]
-            end
+            end if stations.size > 0
           elsif session[:from]
             station_from = session[:from]
           end
@@ -88,7 +88,7 @@ module NLP
             stations = get_stations(response['session_id'], location_direction, location_entities_value)
             if stations.size > 0
               if stations.size > 1
-                result["many_stations"] = "many"
+                result['many_stations'] = true
                 result["stations_#{location_direction}"] = stations
               else
                 eval("station_#{location_direction} = \"#{stations[0][:name]}\"")
@@ -123,33 +123,6 @@ module NLP
               result['date'] = date_value.strftime('%d-%m-%Y')
             end
           end
-
-
-
-          # if (station_from.nil? && station_to.nil?) && !location_direction
-          #   result['missing_from'] = true
-          # elsif station_from.nil? || station_to.nil?
-          #   if (location_direction == 'from' && station_from.nil?) || (location_direction == 'to' && station_to.nil?)
-          #     if location_direction == 'from'
-          #       result['missing_from'] = true
-          #     else
-          #       result['missing_to'] = true
-          #     end
-          #     result['checked_location'] = location_entities[0]['value']
-          #   else
-          #     result['missing_to'] = true if station_to.nil?
-          #     result['missing_from'] = true if station_from.nil?
-          #   end
-          # else
-          #   date_value = get_session(response['session_id'])[:date]
-          #   if date_value.nil?
-          #     result['missing_date'] = true
-          #   else
-          #     result['from'] = station_from
-          #     result['to'] = station_to
-          #     result['date'] = date_value.strftime('%d-%m-%Y')
-          #   end
-          # end
           return result
         },
         clear_session: -> (response) {
@@ -180,6 +153,9 @@ module NLP
         update_session(session_id, {"#{direction}": stations[0][:name], "#{direction}_code": stations[0][:code]})
       end
     end
+    p '===============STATIONS===================='
+    p stations
+    p '===============STATIONS===================='
     return stations
   end
 
@@ -200,7 +176,6 @@ module NLP
   end
 
   def run_actions(session_id, text, set_context = false)
-    # session_context = {}
     p '===============CONTEXT======================='
     p (get_session(session_id)[:context] || {})
     session_context = client.run_actions(session_id, text, (set_context ? (get_session(session_id)[:context] || {}) : {}))
