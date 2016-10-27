@@ -16,7 +16,7 @@ module NLP
           p '--------------WIT request---------------'
           p request
           p '-----------------WIT-------------------'
-          proccess_text(response.fetch['text'], response['quickreplies'], request['context'])
+          proccess_text(response['text'], response['quickreplies'], request['context'])
         },
         searchTrain: -> (response) {
           result = {
@@ -70,14 +70,12 @@ module NLP
           if !to_entities.nil?
             to_entities_value = to_entities[0]['value'].strip.mb_chars.downcase.to_s
             stations = get_stations(response['session_id'], 'to', to_entities_value)
-            if stations.size > 0
-              if stations.size > 1
-                result['many_stations'] = 'many'
-                result['stations_to'] = stations
-              else
-                station_to = stations[0][:name]
-              end
-            end
+            if stations.size > 1
+              result['many_stations'] = 'many'
+              result['stations_to'] = stations
+            else
+              station_to = stations[0][:name]
+            end if stations.size > 0
           elsif session[:to]
             station_to = session[:to]
           end
