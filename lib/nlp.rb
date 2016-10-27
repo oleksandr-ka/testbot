@@ -20,22 +20,22 @@ module NLP
         },
         searchTrain: -> (response) {
           result = {
-            'search_fail' => true,
-            'search_url' => "https://gd.tickets.ua"
+            'search_fail' => 'fail',
+            'search_url' => 'https://gd.tickets.ua'
           }
           session = get_session(response['session_id'])
           search_result = TicketsApi.get('rail/search', {from: session[:from_code], to: session[:to_code], date: session[:date].to_date.strftime('%d-%m-%Y')})
           search_result_status_code = search_result.try(:[], 'result').try(:[], 'code')
           if !search_result_status_code.nil? && search_result_status_code.to_i == 0
             result = {
-              'search_success' => true,
+              'search_success' => 'success',
               'search_url' => "https://gd.tickets.ua/preloader/~#{session[:from_code]}~#{session[:to_code]}~#{session[:date].to_date.strftime("%d.%m.%Y")}~1~ukraine~~~~~/",
               'trains_count' => search_result['trains'].size,
               'trains_descriptions' => search_result['trains'].map{ |train| "#{train['number']}" }.join(", ")
             }
             clear_session(response['session_id'])
           elsif !search_result_status_code.nil?
-            result["error_#{search_result_status_code}"] = true
+            result["error_#{search_result_status_code}"] = 'error'
           end
           result['process_action'] = 'search_train'
           return result
@@ -85,7 +85,7 @@ module NLP
             location_direction = station_from.nil? ? 'from' : 'to'
             stations = get_stations(response['session_id'], location_direction, location_entities_value)
             if stations.size > 1
-              result['many_stations'] = true
+              result['many_stations'] = 'many'
               result["stations_#{location_direction}"] = stations
             else
               eval("station_#{location_direction} = \"#{stations[0][:name]}\"")
@@ -100,19 +100,19 @@ module NLP
 
           if station_from.nil? || station_to.nil?
             if station_from.nil? && (!from_entities.nil? || location_direction == 'from')
-              result['missing_from'] = true
+              result['missing_from'] = 'missing'
               result['checked_location'] = (location_entities_value || from_entities)[0]['value']
             elsif station_to.nil? && (!to_entities.nil? || location_direction == 'to')
-              result['missing_to'] = true
+              result['missing_to'] = 'missing'
               result['checked_location'] = (location_entities_value || to_entities)[0]['value']
             else
-              result['missing_to'] = true if station_to.nil?
-              result['missing_from'] = true if station_from.nil?
+              result['missing_to'] = 'missing' if station_to.nil?
+              result['missing_from'] = 'missing' if station_from.nil?
             end
           else
             date_value = get_session(response['session_id'])[:date]
             if date_value.nil?
-              result['missing_date'] = true
+              result['missing_date'] = 'missing'
             else
               result['from'] = station_from
               result['to'] = station_to
