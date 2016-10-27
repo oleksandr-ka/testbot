@@ -86,14 +86,12 @@ module NLP
             location_entities_value = location_entities[0]['value'].strip.mb_chars.downcase.to_s
             location_direction = station_from.nil? ? 'from' : 'to'
             stations = get_stations(response['session_id'], location_direction, location_entities_value)
-            if stations.size > 0
-              if stations.size > 1
-                result['many_stations'] = true
-                result["stations_#{location_direction}"] = stations
-              else
-                eval("station_#{location_direction} = \"#{stations[0][:name]}\"")
-              end
-            end
+            if stations.size > 1
+              result['many_stations'] = true
+              result["stations_#{location_direction}"] = stations
+            else
+              eval("station_#{location_direction} = \"#{stations[0][:name]}\"")
+            end if stations.size > 0
           end
           if !date.nil?
             parsed_date = NLPDate.parse("#{date[0]['value']}")
