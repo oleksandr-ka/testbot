@@ -9,5 +9,5 @@ test:
 
 production:
   <<: *default
-  url: h:pajdvkl77bpnjrnq9kvhioi1li@ec2-54-75-250-129.eu-west-1.compute.amazonaws.com:17989
+  url: h:pajdvkl77bpnjrnq9kvhioi1li@ec2-79-125-7-17.eu-west-1.compute.amazonaws.com:6399
 
