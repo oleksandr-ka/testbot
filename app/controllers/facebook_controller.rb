@@ -4,8 +4,8 @@ class FacebookController < ActionController::API
   include Facebook::Base
 
   def index
-    head :ok
     FacebookChat.process(params)
+    head :ok
   end
 
   # def validate
