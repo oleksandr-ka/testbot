@@ -94,21 +94,20 @@ module FacebookChat
   def change_user_lang(params)
     send_text_message('Шукаєш квитки? Я допоможу.')
     MessengerPlatform::Api.call(:action, @params[:from], 'typing_on')
-    data = [
-      'Якою мовою тобі зручніше спілкуватися?',
-      [
-        {
-          type: 'postback',
-          title: 'Українська',
-          payload: 'SET_USER_LANG-UK'
-        }, {
-          type: 'postback',
-          title: 'Російська',
-          payload: 'SET_USER_LANG-RU'
-        }
-      ]
+    text = 'Якою мовою тобі зручніше спілкуватися?'
+    buttons = [
+      {
+        type: 'postback',
+        title: 'Українська',
+        payload: 'SET_USER_LANG-UK'
+      }, {
+        type: 'postback',
+        title: 'Російська',
+        payload: 'SET_USER_LANG-RU'
+      }
     ]
-    MessengerPlatform.payload(:button, @params[:from], data)
+
+    MessengerPlatform.payload(:button, @params[:from], text, buttons)
   end
 
   def set_user_lang(params)
