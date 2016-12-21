@@ -1,6 +1,7 @@
 require 'nlp'
 require 'messenger_platform/entities/action'
 require 'messenger_platform/entities/text_message'
+require 'messenger_platform/entities/welcome_button'
 
 module FacebookChat
   extend NLP
@@ -88,6 +89,12 @@ module FacebookChat
   def set_station(params)
     get_stations(@params[:from], params[0], params[1])
     run_actions(@params[:from], "", true)
+  end
+
+  def change_user_lang(params)
+    p '===============change_user_lang==================='
+    p params
+    p '===============change_user_lang==================='
   end
 
 end
