@@ -77,8 +77,8 @@ module FacebookChat
       image_url: context_data["search_fail"] ? "http://99px.ru/sstorage/53/2015/12/mid_152713_2287.jpg" : "http://malteze.net/images/sampledata/poroda/1v_6453738376545473.jpg",
       buttons: [
         {
-          type: "web_url",
-          title: "Продовжити",
+          type: 'web_url',
+          title: 'Продовжити',
           url: context_data['search_url']
         }
       ]
@@ -88,13 +88,32 @@ module FacebookChat
 
   def set_station(params)
     get_stations(@params[:from], params[0], params[1])
-    run_actions(@params[:from], "", true)
+    run_actions(@params[:from], '', true)
   end
 
   def change_user_lang(params)
-    p '===============change_user_lang==================='
-    p params
-    p '===============change_user_lang==================='
+    send_text_message('Шукаєш квитки? Я допоможу.')
+    MessengerPlatform::Api.call(:action, @params[:from], 'typing_on')
+    data = [
+      'Якою мовою тобі зручніше спілкуватися?',
+      [
+        {
+          type: 'postback',
+          title: 'Українська',
+          payload: 'SET_USER_LANG-UK'
+        }, {
+          type: 'postback',
+          title: 'Російська',
+          payload: 'SET_USER_LANG-RU'
+        }
+      ]
+    ]
+    MessengerPlatform.payload(:button, @params[:from], data)
   end
 
+  def set_user_lang(params)
+    p '===============SET USER LANGUAGE===================='
+    p params
+    p '===============SET USER LANGUAGE===================='
+  end
 end
