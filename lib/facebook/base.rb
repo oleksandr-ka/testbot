@@ -13,9 +13,6 @@ module Facebook
 
     def subscribe
       activate_bot
-    #   render json: activate_bot
-    # rescue RestClient::BadRequest
-    #   render json: 'Invalid page access token'
     end
 
     private

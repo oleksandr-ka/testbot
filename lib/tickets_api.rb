@@ -11,6 +11,9 @@ class TicketsApi
     private
 
     def request_without_cache(action, params, locale)
+      p '==========REQUES==================='
+      p "/#{action}.json?key=eeb1cbcd-0b8a-4024-9b65-f4219cc214db&lang=#{locale}&#{params.to_query}"
+      p '==========REQUES==================='
       response = client.get("/#{action}.json?key=eeb1cbcd-0b8a-4024-9b65-f4219cc214db&lang=#{locale}&#{params.to_query}")
       p '===========API RESPONSE==============='
       p response.body
