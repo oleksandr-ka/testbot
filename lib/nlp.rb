@@ -5,13 +5,13 @@ require "nlp_date"
 module NLP
 
   LOCALES = {
-    :uk => 'Українська',
-    :ru => 'Руский'
+    uk: 'Українська',
+    ru: 'Руский'
   }
 
   WIT_LOCALES = {
-    :uk => 'RYZZVM3TRHSIJW3IVMXXO3RR66QT3CFT',
-    :ru => 'FPHIJCQ2D6SC5DHKL3XK3HDQS77VFRVH'
+    uk: 'RYZZVM3TRHSIJW3IVMXXO3RR66QT3CFT',
+    ru: 'FPHIJCQ2D6SC5DHKL3XK3HDQS77VFRVH'
   }
 
   def client(locale)
@@ -200,9 +200,10 @@ module NLP
 
   def get_user_locale(session_id)
     user_locale = get_user(session_id)[:locale]
-    return if user_locale
-      WIT_LOCALES.keys.include?(user_locale) ? user_locale : WIT_LOCALES.keys.first
+    if user_locale
+      user_locale = WIT_LOCALES.keys.include?(user_locale) ? user_locale : WIT_LOCALES.keys.first
     end
+    return user_locale
   end
 
   #
