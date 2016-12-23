@@ -187,7 +187,7 @@ module NLP
     session_context = client(get_user_locale(session_id)).run_actions("#{session_id}-#{get_user_locale(session_id)}", text, (set_context ? (get_session(session_id)[:context] || {}) : {}))
     update_session(session_id, {context: session_context})
     p '===============CONTEXT======================='
-    p client
+    p @client
     p session_context
     p '===============CONTEXT======================='
   end
