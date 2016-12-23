@@ -15,10 +15,11 @@ module NLP
   }
 
   def client(locale)
-    p '!!!!!!!!!!!!@client!!!!!!!!!!!!!!!!!!!!!!!!'
-    p @client
-    p '!!!!!!!!!!!!@client!!!!!!!!!!!!!!!!!!!!!!!!'
-    @client ||= Wit.new(access_token: WIT_LOCALES[locale], actions: actions)
+    # p '!!!!!!!!!!!!@client!!!!!!!!!!!!!!!!!!!!!!!!'
+    # p @client
+    # p '!!!!!!!!!!!!@client!!!!!!!!!!!!!!!!!!!!!!!!'
+    # @client ||= Wit.new(access_token: WIT_LOCALES[locale], actions: actions)
+    Wit.new(access_token: WIT_LOCALES[locale], actions: actions)
   end
 
   def actions
