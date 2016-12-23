@@ -182,10 +182,12 @@ module NLP
   end
 
   def run_actions(session_id, text, set_context = false)
-    p '===============CONTEXT======================='
-    p (get_session(session_id)[:context] || {})
+    # p '===============CONTEXT======================='
+    # p (get_session(session_id)[:context] || {})
     session_context = client(get_user_locale(session_id)).run_actions("#{session_id}-#{get_user_locale(session_id)}", text, (set_context ? (get_session(session_id)[:context] || {}) : {}))
     update_session(session_id, {context: session_context})
+    p '===============CONTEXT======================='
+    p client
     p session_context
     p '===============CONTEXT======================='
   end
@@ -199,13 +201,7 @@ module NLP
   end
 
   def get_user_locale(session_id)
-    user_locale = get_user(session_id)[:locale]
-    if user_locale
-      user_locale = WIT_LOCALES.keys.include?(user_locale) ? user_locale : WIT_LOCALES.keys.first
-    else
-      user_locale = WIT_LOCALES.keys.first
-    end
-    return user_locale
+    return WIT_LOCALES.keys.include?(get_user(session_id)[:locale]) ? get_user(session_id)[:locale] : WIT_LOCALES.keys.first
   end
 
   #
