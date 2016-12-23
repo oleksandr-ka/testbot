@@ -113,10 +113,6 @@ module FacebookChat
   end
 
   def set_user_lang(params)
-    p '===============SET USER LANGUAGE===================='
-    p params[0]
-    p '===============SET USER LANGUAGE===================='
     set_user_data(@params[:from], {locale: params[0].to_sym})
-    run_actions(@params[:from], '', true)
   end
 end
