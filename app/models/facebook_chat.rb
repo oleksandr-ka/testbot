@@ -92,6 +92,8 @@ module FacebookChat
   end
 
   def change_user_lang(params)
+    # update_session(@params[:from], {:context => {'get_hello' => ''}})
+    # run_actions(@params[:from], '', true)
     send_text_message('Шукаєш квитки? Я допоможу.')
     MessengerPlatform::Api.call(:action, @params[:from], 'typing_on')
     text = 'Якою мовою тобі зручніше спілкуватися?'
@@ -112,7 +114,9 @@ module FacebookChat
 
   def set_user_lang(params)
     p '===============SET USER LANGUAGE===================='
-    p params
+    p params[0]
     p '===============SET USER LANGUAGE===================='
+    set_user_data(@params[:from], {locale: params[0]})
+    run_actions(@params[:from], '', true)
   end
 end
