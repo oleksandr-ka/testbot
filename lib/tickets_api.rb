@@ -1,20 +1,17 @@
 class TicketsApi
   class << self
-    def get(action, params, cache_result = false)
+    def get(action, params, locale, cache_result = false)
       if cache_result
-        request_with_cache(action, params)
+        request_with_cache(action, params, locale)
       else
-        request_without_cache(action, params)
+        request_without_cache(action, params, locale)
       end
     end
 
     private
 
-    def request_without_cache(action, params)
-      p '============================='
-      p "/#{action}.json?key=eeb1cbcd-0b8a-4024-9b65-f4219cc214db&lang=uk&#{params.to_query}"
-      p '=============================='
-      response = client.get("/#{action}.json?key=eeb1cbcd-0b8a-4024-9b65-f4219cc214db&lang=uk&#{params.to_query}")
+    def request_without_cache(action, params, locale)
+      response = client.get("/#{action}.json?key=eeb1cbcd-0b8a-4024-9b65-f4219cc214db&lang=#{locale}&#{params.to_query}")
       p '===========API RESPONSE==============='
       p response.body
       p JSON.parse(response.body)
@@ -22,10 +19,10 @@ class TicketsApi
       JSON.parse(response.body).try(:[], 'response')
     end
 
-    def request_with_cache(action, params)
-      cache_key = "#{action}_#{params.to_query.downcase}"
+    def request_with_cache(action, params, locale)
+      cache_key = "#{action}_#{locale}_#{params.to_query.downcase}"
       result = Rails.cache.fetch(cache_key) do
-        request_without_cache(action, params)
+        request_without_cache(action, params, locale)
       end
       Rails.cache.delete(cache_key) unless result
       return result

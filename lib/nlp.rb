@@ -15,11 +15,8 @@ module NLP
   }
 
   def client(locale)
-    # p '!!!!!!!!!!!!@client!!!!!!!!!!!!!!!!!!!!!!!!'
-    # p @client
-    # p '!!!!!!!!!!!!@client!!!!!!!!!!!!!!!!!!!!!!!!'
     # @client ||= Wit.new(access_token: WIT_LOCALES[locale], actions: actions)
-    Wit.new(access_token: WIT_LOCALES[locale], actions: actions)
+    return Wit.new(access_token: WIT_LOCALES[locale], actions: actions)
   end
 
   def actions
@@ -38,7 +35,7 @@ module NLP
           'search_url' => 'https://gd.tickets.ua'
         }
         session = get_session(response['session_id'])
-        search_result = TicketsApi.get('rail/search', {from: session[:from_code], to: session[:to_code], date: session[:date].to_date.strftime('%d-%m-%Y')})
+        search_result = TicketsApi.get('rail/search', {from: session[:from_code], to: session[:to_code], date: session[:date].to_date.strftime('%d-%m-%Y')}, get_user_locale(response['session_id']))
         search_result_status_code = search_result.try(:[], 'result').try(:[], 'code')
         if !search_result_status_code.nil? && search_result_status_code.to_i == 0
           result = {
@@ -149,7 +146,7 @@ module NLP
   end
 
   def get_stations(session_id, direction, text)
-    station_response = TicketsApi.get('rail/station', {name: text}, true).try(:[], 'stations')
+    station_response = TicketsApi.get('rail/station', {name: text}, get_user_locale(session_id), true).try(:[], 'stations')
     stations = []
     if station_response.to_a.size > 0
       station_response.to_a.each do |one_st|
@@ -191,7 +188,6 @@ module NLP
     session_context = client(get_user_locale(session_id)).run_actions("#{session_id}-#{get_user_locale(session_id)}", text, (set_context ? (get_session(session_id)[:context] || {}) : {}))
     update_session(session_id, {context: session_context})
     p '===============CONTEXT======================='
-    p @client
     p session_context
     p '===============CONTEXT======================='
   end
