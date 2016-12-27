@@ -1,4 +1,5 @@
 require 'nlp'
+require 'wiki'
 require 'messenger_platform/entities/action'
 require 'messenger_platform/entities/text_message'
 require 'messenger_platform/entities/welcome_button'
@@ -58,9 +59,15 @@ module FacebookChat
       data = []
       station_direction = (context_data.keys.include?('stations_to') ? 'to' : 'from')
       (context_data['stations_to'] || context_data['stations_from']).each do |station|
+        wiki_station_data = Wiki.search(station[:name])
         data << {
           title: text,
-          buttons: [{type: "postback", title: station[:name], payload: "SET_STATION-#{station_direction.upcase}-#{station[:code]}"}]
+          image_url: wiki_station_data.image_urls.first,
+          buttons: [{
+            type: "postback",
+            title: station[:name],
+            payload: "SET_STATION-#{station_direction.upcase}-#{station[:code]}"
+          }]
         }
       end
       p data

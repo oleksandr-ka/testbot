@@ -15,7 +15,7 @@ module NLP
   }
 
   def client(locale)
-    # @client ||= Wit.new(access_token: WIT_LOCALES[locale], actions: actions)
+    I18n.locale = locale
     return Wit.new(access_token: WIT_LOCALES[locale], actions: actions)
   end
 

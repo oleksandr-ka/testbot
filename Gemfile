@@ -45,3 +45,4 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'wit'
 # gem 'messenger-ruby'
 gem 'messenger_platform'
+gem 'wikipedia-client'
