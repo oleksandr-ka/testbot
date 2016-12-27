@@ -59,7 +59,7 @@ module FacebookChat
       data = []
       station_direction = (context_data.keys.include?('stations_to') ? 'to' : 'from')
       (context_data['stations_to'] || context_data['stations_from']).each do |station|
-        wiki_station_data = Wiki.search(station[:name])
+        wiki_station_data = Wiki.search(station[:name].mb_chars.downcase.to_s)
         data << {
           title: text,
           image_url: wiki_station_data.image_urls.first,
