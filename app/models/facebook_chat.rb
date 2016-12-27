@@ -63,6 +63,7 @@ module FacebookChat
         data << {
           title: text,
           image_url: wiki_station_data.image_urls.first,
+          subtitle: wiki_station_data.summary,
           buttons: [{
             type: "postback",
             title: station[:name],
