@@ -62,7 +62,7 @@ module FacebookChat
         wiki_station_data = Wiki.search(station[:name].mb_chars.downcase.to_s)
         data << {
           title: text,
-          image_url: page.image_urls.select { |ie| !ie.mb_chars.downcase.to_s.include?('.svg') }.first,
+          image_url: wiki_station_data.image_urls.select { |ie| !ie.mb_chars.downcase.to_s.include?('.svg') }.first,
           subtitle: wiki_station_data.summary,
           buttons: [{
             type: "postback",
