@@ -16,10 +16,15 @@ class Wiki
         query << text.split(/[\s,-]/).map(&:mb_chars).map(&m.to_sym).map(&:to_s)
       end
       prepared_query = []
-      query.each do |texts|
-        prepared_query << texts.join(' ')
-        prepared_query << texts.join('-')
+      if text.split(/[\s,-]/).size > 1
+        query.each do |texts|
+          prepared_query << texts.join(' ')
+          prepared_query << texts.join('-')
+        end
+      else
+        prepared_query = query.flatten
       end
+
       return prepared_query.join('|')
     end
   end
