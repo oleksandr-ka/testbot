@@ -12,7 +12,7 @@ class Wiki
 
     def prepare_query(text)
       query = []
-      %w(capitalize upcase downcase).each do |m|
+      %w(capitalize downcase upcase).each do |m|
         query << text.split(/[\s,-]/).map(&:mb_chars).map(&m.to_sym).map(&:to_s)
       end
       prepared_query = []
