@@ -1,0 +1,543 @@
+---
+openapi: 3.0.1
+info:
+  title: API V1
+  version: v1
+paths:
+  "/api/v1/cards":
+    get:
+      summary: Retrieves a feed with cards
+      tags:
+      - Cards
+      security:
+      - bearer: []
+      parameters:
+      - name: filter[feed]
+        in: query
+        description: market, home, stash, profile
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Cards found
+          content: {}
+        '400':
+          description: Wrong feed
+          content: {}
+        '401':
+          description: Invalid credentials
+          content: {}
+    post:
+      summary: Create audio card
+      tags:
+      - Cards
+      description: |2
+
+        **Request Parameters**
+
+        | Parameter                     |          | Type           | Description                                                                                                                     |
+        | ----------------------------- | -------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+        | **cardType**                  | required | string         | Card type: `audio`                                                                                                              |
+        | **cardName**                  | required | string         | Card name. Max size: 100                                                                                                        |
+        | **text**                      | optional | string         | Card description. Max size: 5_000                                                                                               |
+        | **subtype**                   | required | string         | Card subtype. Available: `song`, `sample`, `book`, `podcast`, `tutorial`                                                        |
+        | **accessibility**             | required | string         | Accessibility. Available: `open`, `closed`, `followers`                                                                         |
+        | **accessibilityPlan**         | required | string         | Accessibility. Available: `free`, `earn`, `promote`                                                                             |
+        | **ageRestriction**            | required | boolean        | true - only for adults, false - for all users                                                                                   |
+        | **page**                      | required | object         | Card page                                                                                                                       |
+        | **page.id**                   | required | string         | ID of the page                                                                                                                  |
+        | **page.type**                 | required | string         | `page`                                                                                                                          |
+        | **moods**                     | optional | array          | Card mood                                                                                                                       |
+        | **moods.id**                  | required | string         | ID of the mood                                                                                                                  |
+        | **moods.type**                | required | string         | Entity type. Available: `mood`                                                                                                  |
+        | **tags**                      | optional | array          | Card tags                                                                                                                       |
+        | **tags.text**                 | required | string         | Tag text                                                                                                                        |
+        | **restrictionCountries**      | optional | array          | List of restriction countries(temporary only save)                                                                              |
+        | **restrictionCountries.id**   | required | string         | Id of restriction country                                                                                                       |
+        | **restrictionCountries.type** | required | string         | Entity type. Available: `country`                                                                                               |
+        | **cardOwnerships**            | optional | array          | List of cards coowners                                                                                                          |
+        | **cardOwnerships.page_id**    | required | string         | Coowners profile page id                                                                                                        |
+        | **cardOwnerships.part**       | required | float          | Coowners part. Beetwen 0..1.0                                                                                                   |
+        | **cardImage**                 | required | object         | Card content(image)                                                                                                             |
+        | **cardImage.kind**            | required | string         | Available: `uploaded`, `linked`. _Uploaded_ - for images which was already uploaded to S3. _Linked_ - if you want to link image |
+        | **cardImage.key**             | required | string         | For `uploaded` content: file key from S3. For `linked`: valid URL                                                               |
+        | **cardImage.width**           | required | integer        | Image width                                                                                                                     |
+        | **cardImage.height**          | required | integer        | Image height                                                                                                                    |
+        | **cardImage.size**            | optional | integer        | Image size                                                                                                                      |
+        | **cardAudio**                 | required | object         | Card content(audio)                                                                                                             |
+        | **cardAudio.kind**            | required | string         | Available: `uploaded`, `linked`. _Uploaded_ - for audio which was already uploaded to S3. _Linked_ - if you want to link audio  |
+        | **cardAudio.key**             | required | string         | For `uploaded` content: file key from S3. For `linked`: valid URL                                                               |
+        | **cardAudio.audioId**         | optional | string         | For `linked` audio                                                                                                              |
+        | **cardAudio.duration**        | optional | float, integer | For `linked` audio                                                                                                              |
+        | **cardAudio.size**            | optional | integer        | Audio size                                                                                                                      |
+      security:
+      - bearer: []
+      parameters: []
+      responses:
+        '201':
+          description: Card created
+          content: {}
+        '401':
+          description: Invalid credentials
+          content: {}
+        '422':
+          description: Invalid params
+          content: {}
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - type
+                  - attributes
+                  - relationships
+                  properties:
+                    type:
+                      type: string
+                    attributes:
+                      type: object
+                      required:
+                      - cardType
+                      - cardName
+                      - accessibility
+                      - subtype
+                      - ageRestriction
+                      properties:
+                        cardType:
+                          type: string
+                          value: audio
+                        cardName:
+                          type: string
+                          maxLength: 100
+                        accessibility:
+                          type: string
+                          enum:
+                          - open
+                          - closed
+                          - followers
+                        subtype:
+                          type: string
+                          enum:
+                          - song
+                          - sample
+                          - book
+                          - podcast
+                        ageRestriction:
+                          type: boolean
+                        text:
+                          type: string
+                          maxLength: 5000
+                    relationships:
+                      type: object
+                      required:
+                      - page
+                      - cardAudio
+                      properties:
+                        page:
+                          type: object
+                          required:
+                          - data
+                          properties:
+                            data:
+                              type: object
+                              required:
+                              - id
+                              - type
+                              properties:
+                                id:
+                                  type: string
+                                type:
+                                  type: string
+                        cardImage:
+                          type: object
+                          required:
+                          - data
+                          properties:
+                            data:
+                              type: object
+                              required:
+                              - type
+                              - attributes
+                              properties:
+                                type:
+                                  type: string
+                                attributes:
+                                  type: object
+                                  required:
+                                  - kind
+                                  - key
+                                  - width
+                                  - height
+                                  properties:
+                                    kind:
+                                      type: string
+                                      enum:
+                                      - linked
+                                      - uploaded
+                                    key:
+                                      type: string
+                                    width:
+                                      type: integer
+                                    height:
+                                      type: integer
+                                    size:
+                                      type: integer
+                        cardAudio:
+                          type: object
+                          required:
+                          - data
+                          properties:
+                            data:
+                              type: object
+                              required:
+                              - type
+                              - attributes
+                              properties:
+                                type:
+                                  type: string
+                                attributes:
+                                  type: object
+                                  required:
+                                  - kind
+                                  - key
+                                  properties:
+                                    kind:
+                                      type: string
+                                      enum:
+                                      - linked
+                                      - uploaded
+                                    key:
+                                      type: string
+                                    audioId:
+                                      type: string
+                                    duration:
+                                      type: integer
+                                    size:
+                                      type: integer
+                        moods:
+                          type: object
+                          required:
+                          - data
+                          properties:
+                            data:
+                              type: array
+                              items:
+                                type: object
+                                required:
+                                - id
+                                - key
+                                properties:
+                                  id:
+                                    type: string
+                                  key:
+                                    type: string
+                        tags:
+                          type: object
+                          required:
+                          - data
+                          properties:
+                            data:
+                              type: array
+                              items:
+                                type: object
+                                required: []
+                                properties:
+                                  type:
+                                    type: string
+                                  attributes:
+                                    type: object
+                                    required: []
+                                    properties:
+                                      text:
+                                        type: string
+                        restrictionCountries:
+                          type: object
+                          required:
+                          - data
+                          properties:
+                            data:
+                              type: array
+                              items:
+                                type: object
+                                required:
+                                - id
+                                - key
+                                properties:
+                                  id:
+                                    type: string
+                                  key:
+                                    type: string
+                        cardOwnerships:
+                          type: object
+                          required:
+                          - data
+                          properties:
+                            data:
+                              type: array
+                              items:
+                                type: object
+                                required:
+                                - type
+                                - attributes
+                                properties:
+                                  type:
+                                    type: string
+                                  attributes:
+                                    type: object
+                                    required:
+                                    - pageId
+                                    - part
+                                    properties:
+                                      pageId:
+                                        type: string
+                                      part:
+                                        type: number
+                                        minimum: 0
+                                        maximum: 1.0
+            examples:
+              audio_card:
+                value:
+                  data:
+                    type: card
+                    attributes:
+                      cardType: audio
+                      cardName: Test Card
+                      accessibility: open
+                      subtype: sample
+                      ageRestriction: true
+                      text: this is my audio
+                    relationships:
+                      page:
+                        data:
+                          id: '15'
+                          type: page
+                      cardImage:
+                        data:
+                          type: cardImage
+                          attributes:
+                            kind: linked
+                            key: https://i1.sndcdn.com/artworks-000312925218-kwmrod-t500x500.jpg
+                            width: 1000
+                            height: 900
+                      cardAudio:
+                        data:
+                          type: cardAudio
+                          attributes:
+                            kind: linked
+                            key: https://soundcloud.com/flippdinero/leave-me-alone
+                            duration: 195727
+                            audioId: '1234'
+                      moods:
+                        data:
+                        - id: '25'
+                          type: mood
+                      tags:
+                        data:
+                        - type: tag
+                          attributes:
+                            text: "#my_audio"
+                        - type: tag
+                          attributes:
+                            text: "#best_audio"
+                      restrictionCountries:
+                        data:
+                        - id: '12'
+                          type: country
+  "/api/v1/cards/{id}":
+    get:
+      summary: Fetch card
+      tags:
+      - Cards
+      security:
+      - bearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Card showed
+          content: {}
+    put:
+      summary: Update audio card
+      tags:
+      - Cards
+      description: Add params description with markdown here
+      security:
+      - bearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Card updated
+          content: {}
+        '401':
+          description: Invalid credentials
+          content: {}
+        '422':
+          description: Invalid params
+          content: {}
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - id
+                  - type
+                  properties:
+                    id:
+                      type: string
+                    type:
+                      type: string
+                    attributes:
+                      type: object
+                      required: []
+                      properties:
+                        cardName:
+                          type: string
+                        text:
+                          type: string
+                        subtype:
+                          type: string
+                        accessibility:
+                          type: string
+                        ageRestriction:
+                          type: boolean
+                    relationships:
+                      type: object
+                      required: []
+                      properties:
+                        moods:
+                          type: object
+                          required:
+                          - data
+                          properties:
+                            data:
+                              type: array
+                              items:
+                                type: object
+                                required:
+                                - id
+                                - type
+                                properties:
+                                  id:
+                                    type: string
+                                  type:
+                                    type: string
+                        tags:
+                          type: object
+                          required:
+                          - data
+                          properties:
+                            data:
+                              type: array
+                              items:
+                                type: object
+                                required:
+                                - type
+                                - attributes
+                                properties:
+                                  type:
+                                    type: string
+                                  attributes:
+                                    type: object
+                                    required:
+                                    - text
+                                    properties:
+                                      text:
+                                        type: string
+                        restrictionCountries:
+                          type: object
+                          required:
+                          - data
+                          properties:
+                            data:
+                              type: array
+                              items:
+                                type: object
+                                required:
+                                - type
+                                - id
+                                properties:
+                                  type:
+                                    type: string
+                                  id:
+                                    type: string
+                        cardOwnerships:
+                          type: object
+                          required:
+                          - data
+                          properties:
+                            data:
+                              type: array
+                              items:
+                                type: object
+                                required:
+                                - attributes
+                                properties:
+                                  type:
+                                    type: string
+                                  attributes:
+                                    type: object
+                                    required:
+                                    - pageId
+                                    - part
+                                    properties:
+                                      pageId:
+                                        type: string
+                                      part:
+                                        type: number
+    delete:
+      summary: Delete card
+      tags:
+      - Cards
+      security:
+      - bearer: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: Card deleted
+          content: {}
+        '401':
+          description: Invalid credentials
+          content: {}
+servers:
+- url: "{protocol}://{defaultHost}"
+  variables:
+    protocol:
+      default: https
+      enum:
+      - http
+      - https
+    defaultHost:
+      default: localhost:3000
+components:
+  securitySchemes:
+    bearer:
+      type: apiKey
+      name: Authorization
+      in: header
